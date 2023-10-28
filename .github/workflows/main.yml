@@ -41,6 +41,10 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         FORCE_COLOR: "1"
       run: |
+        echo ${{env.CI_COMMIT_REF_NAME}}
+        echo ${{env.ORG_ALIAS}}
+        echo ${{env.CONFIG_BRANCH}}
+        echo ${{env.GITHUB_TOKEN}}
         echo ${{secrets.AUTH_SECRET}} > ./AUTH_SECRET.txt
         sfdx auth:sfdxurl:store -f ./AUTH_SECRET.txt -s -a targetOrg
         sfdx hardis:project:deploy:sources:dx --check
