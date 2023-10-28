@@ -46,5 +46,5 @@ jobs:
         FORCE_COLOR: "1"
       run: |
         echo "Simulate SFDX deployment using Hardis against \"$CONFIG_BRANCH\""
-        sfdx hardis:auth:login
-        sfdx hardis:project:deploy:sources:dx --check
+        sfdx hardis:auth:login targetusername -u
+        sfdx hardis:project:deploy:sources:dx --check targetusername -u "gustavo.bulhoes@curious-badger-v5jsxe.com"
