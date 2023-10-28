@@ -14,11 +14,15 @@ jobs:
     permissions:
       pull-requests: write
     steps:
+    # Checkout repo
+    - name: Checkout code
+      uses: actions/checkout@v4
     # Setup node
     - name: Setup Node
       uses: actions/setup-node@v3
       with:
         node-version: "18"
+    
     # SFDX & plugins
     - name: Install SFDX and plugins
       run: |
@@ -41,4 +45,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         FORCE_COLOR: "1"
       run: |
-        echo ${{env.CONFIG_BRANCH}}
+        echo "Simulate SFDX deployment using Hardis against \"$CONFIG_BRANCH\""
+        sfdx hardis:auth:login
+        sfdx hardis:project:deploy:sources:dx --check
