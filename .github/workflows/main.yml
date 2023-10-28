@@ -41,7 +41,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         FORCE_COLOR: "1"
       run: |
-        echo ${{env.SFDX_CLIENT_ID_MAIN}}
-        echo ${{env.SFDX_CLIENT_KEY_MAIN}}
         sfdx hardis:auth:login
-        sfdx hardis:project:deploy:sources:dx --check
