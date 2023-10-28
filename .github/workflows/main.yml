@@ -45,6 +45,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         FORCE_COLOR: "1"
       run: |
-        echo "Simulate SFDX deployment using Hardis against \"$CONFIG_BRANCH\""
+        echo ${{secrets.AUTH_SECRET}} > ./AUTH_SECRET.txt
+        sfdx auth:sfdxurl:store -f ./AUTH_SECRET.txt -s -a targetOrg
         sfdx hardis:auth:login
         sfdx hardis:project:deploy:sources:dx --check
