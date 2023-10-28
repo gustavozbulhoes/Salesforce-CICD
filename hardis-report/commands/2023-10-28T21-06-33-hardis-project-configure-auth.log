@@ -1,0 +1,2 @@
+/Users/zanattabulhoes/.local/share/sf/client/2.14.6-1f2724e/bin/node /Users/zanattabulhoes/.local/share/sf/client/2.14.6-1f2724e/bin/run hardis:project:configure:auth --devhub --websocket localhost:2734[sfdx-hardis] 🦙 Please select org login into the org you want to configure the SFDX Authentication ↑↑ Look up in VsCode ↑↑
+[sfdx-hardis] {"org":"exitNow"}

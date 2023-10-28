@@ -1,0 +1,33 @@
+/Users/zanattabulhoes/.local/share/sf/client/2.14.6-1f2724e/bin/node /Users/zanattabulhoes/.local/share/sf/client/2.14.6-1f2724e/bin/run hardis:project:configure:auth --websocket localhost:2734[sfdx-hardis] 🦙 Please select org login into the org you want to configure the SFDX Authentication ↑↑ Look up in VsCode ↑↑
+[sfdx-hardis] Selection done but hidden in log because it contains sensitive information
+[sfdx-hardis][command] sfdx config:set defaultusername=gustavo.bulhoes@curious-badger-v5jsxe.com --json
+[sfdx-hardis][command] sfdx alias:set MY_ORG=gustavo.bulhoes@curious-badger-v5jsxe.com --json
+[sfdx-hardis] Updated config file /Users/zanattabulhoes/Desktop/Salesforce/Studies/sfdx-hardis/sfdxHardisProject/config/user/.sfdx-hardis.zanattabulhoes.yml with values: 
+{
+  "scratchOrgAlias": null,
+  "scratchOrgUsername": null
+}
+[sfdx-hardis] Org gustavo.bulhoes@curious-badger-v5jsxe.com - https://curious-badger-v5jsxe-dev-ed.trailblaze.my.salesforce.com
+[sfdx-hardis][command] sfdx config:get defaultusername --json
+[sfdx-hardis][command] sfdx alias:list --json
+[sfdx-hardis] 🦙 What is the name of the git branch you want to configure ? Examples: developpement,recette,production ↑↑ Look up in VsCode ↑↑
+[sfdx-hardis] {"value":"main"}
+[sfdx-hardis] 🦙 What is the base URL or the org you want to connect to, as main related org ? ↑↑ Look up in VsCode ↑↑
+[sfdx-hardis] {"value":"https://login.salesforce.com"}
+[sfdx-hardis] 🦙 What is the Salesforce username that will be used for deployments by CI server ? Example: admin.sfdx@myclient.com ↑↑ Look up in VsCode ↑↑
+[sfdx-hardis] {"value":"gustavo.bulhoes@curious-badger-v5jsxe.com"}
+[sfdx-hardis] Updated config file ./config/branches/.sfdx-hardis.main.yml with values: 
+{
+  "targetUsername": "gustavo.bulhoes@curious-badger-v5jsxe.com",
+  "instanceUrl": "https://login.salesforce.com"
+}
+[sfdx-hardis] Generating SSL certificate...
+[sfdx-hardis] 
+[sfdx-hardis] 
+[sfdx-hardis] 🦙 Do you want sfdx-hardis to configure the SFDX connected app on your org ? (say yes if you don't know) ↑↑ Look up in VsCode ↑↑
+[sfdx-hardis] {"value":false}
+[sfdx-hardis] Now you can configure the sfdx connected app
+[sfdx-hardis] Follow instructions here: https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_connected_app.htm
+[sfdx-hardis] Use /Users/zanattabulhoes/main.crt as certificate on Connected App configuration page, then delete /Users/zanattabulhoes/main.crt for security
+[sfdx-hardis] - configure CI variable SFDX_CLIENT_ID_MAIN with value of ConsumerKey on Connected App configuration page
+[sfdx-hardis] - configure CI variable SFDX_CLIENT_KEY_MAIN with value 6ab610fab154e19fef0970b739081396 key
