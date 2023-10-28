@@ -22,6 +22,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: "18"
+          fetch-depth: 0 # Faster code checkout fetching only latest commit
     
     # SFDX & plugins
     - name: Install SFDX and plugins
