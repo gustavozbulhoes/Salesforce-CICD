@@ -1,0 +1,15 @@
+/Users/zanattabulhoes/.local/share/sf/client/2.14.6-1f2724e/bin/node /Users/zanattabulhoes/.local/share/sf/client/2.14.6-1f2724e/bin/run hardis:config:get --level project --json/Users/zanattabulhoes/.local/share/sf/client/2.14.6-1f2724e/bin/node /Users/zanattabulhoes/.local/share/sf/client/2.14.6-1f2724e/bin/run hardis:config:get --level project --json/Users/zanattabulhoes/.local/share/sf/client/2.14.6-1f2724e/bin/node /Users/zanattabulhoes/.local/share/sf/client/2.14.6-1f2724e/bin/run hardis:config:get --level user --json[sfdx-hardis] Updated config file config/user/.sfdx-hardis.zanattabulhoes.yml with values: 
+{
+  "installedApps": [
+    "git"
+  ]
+}
+[sfdx-hardis] {}
+[sfdx-hardis] Updated config file /Users/zanattabulhoes/Desktop/Salesforce/Studies/sfdx-hardis/sfdxHardisProject/config/user/.sfdx-hardis.zanattabulhoes.yml with values: 
+{
+  "installedApps": [
+    "git"
+  ]
+}
+[sfdx-hardis] {}
+[sfdx-hardis] {"installedApps":["git"]}
