@@ -41,4 +41,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         FORCE_COLOR: "1"
       run: |
-        sfdx hardis:auth:login
+        sfdx hardis:project:deploy:sources:dx --check
