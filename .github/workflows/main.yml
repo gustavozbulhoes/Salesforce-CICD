@@ -17,13 +17,13 @@ jobs:
     # Checkout repo
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Faster code checkout fetching only latest commit
     # Setup node
     - name: Setup Node
       uses: actions/setup-node@v3
       with:
-        node-version: "18"
-          fetch-depth: 0 # Faster code checkout fetching only latest commit
-    
+        node-version: "18"    
     # SFDX & plugins
     - name: Install SFDX and plugins
       run: |
