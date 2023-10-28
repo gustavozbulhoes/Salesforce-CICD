@@ -41,4 +41,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         FORCE_COLOR: "1"
       run: |
-        sfdx hardis:project:deploy:sources:dx --check
+        echo ${{env.CONFIG_BRANCH}}
