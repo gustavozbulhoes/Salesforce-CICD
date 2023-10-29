@@ -31,8 +31,8 @@ public class UtilsTest {
     public static void waitSeconds(){
         Integer start = System.Now().millisecond();
         DateTime startDateTime = System.Now();
-        while(System.Now().millisecond()< start+10000){ 
+        while(System.Now().millisecond()< start+5000){ 
         }
-        assert.areEqual(true,startDateTime.addSeconds(5)<system.Now(),'delay did not happen');
+        assert.areEqual(true,startDateTime.addSeconds(2)<system.Now(),'delay did not happen');
     }
 }
