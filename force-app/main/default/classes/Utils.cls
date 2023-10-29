@@ -12,4 +12,9 @@ public without sharing class Utils {
         Account acc = new Account(Name = 'test');
         insert acc;
     }
+
+    public static void createRandomCase(){
+        Case c = new Case(Subject = 'Test');
+        insert c;
+    }
 }
