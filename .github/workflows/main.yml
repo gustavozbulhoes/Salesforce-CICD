@@ -40,6 +40,8 @@ jobs:
     # Login & check deploy with test classes & code coverage
     - name: Login & Simulate deployment
       env:
+        SFDX_CLIENT_ID_MAIN: ${{ secrets.SFDX_CLIENT_ID_MAIN}}
+        SFDX_CLIENT_KEY_MAIN: ${{ secrets.SFDX_CLIENT_KEY_MAIN}}
         SFDX_DEPLOY_WAIT_MINUTES: 120 # Override if necessary
         SFDX_TEST_WAIT_MINUTES: 120 # Override if necessary
         CI_COMMIT_REF_NAME: ${{ github.event.pull_request.base.ref }} # Defines the target branch of the PR
@@ -50,4 +52,5 @@ jobs:
       run: |
         sfdx auth:sfdxurl:store -f ./AUTH_SECRET.txt -s -a targetOrg
         echo "Simulate SFDX deployment using Hardis against \"$CONFIG_BRANCH\""
+        sfdx hardis:auth:login
         sfdx hardis:project:deploy:sources:dx --check
