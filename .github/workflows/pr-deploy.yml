@@ -47,6 +47,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         FORCE_COLOR: "1"
       run: |
-        echo "Deploy SFDX deployment using Hardis against \"$CONFIG_BRANCH\""
+        echo "SFDX deployment using Hardis against \"$CONFIG_BRANCH\""
         sfdx hardis:auth:login -d
         sfdx hardis:project:deploy:sources:dx
