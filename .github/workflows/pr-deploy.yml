@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [ main ]
     types: [closed]
+    paths:
+      - 'force-app/**'
+    
 
 name: Deploy SFDX Hardis
 
@@ -35,7 +38,7 @@ jobs:
         echo 'y' | sfdx plugins:install sfdx-git-delta
         sf version --verbose --json
     # Login & check deploy with test classes & code coverage
-    - name: Login & Simulate deployment
+    - name: Login & Deploy
       env:
         SFDX_CLIENT_ID_MAIN: ${{ secrets.SFDX_CLIENT_ID_MAIN}}
         SFDX_CLIENT_KEY_MAIN: ${{ secrets.SFDX_CLIENT_KEY_MAIN}}
