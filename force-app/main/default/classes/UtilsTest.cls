@@ -19,4 +19,20 @@ public class UtilsTest {
         List<Account> accs = [SELECT Id FROM Account LIMIT 1];
         assert.areEqual(false,accs.isEmpty(),'account was not created');
     }
+
+    @isTest
+    public static void createRandomCase(){
+        Utils.createRandomCase();
+        List<Case> cases = [SELECT Id FROM Case LIMIT 1];
+        assert.areEqual(false,cases.isEmpty(),'case was not created');
+    }
+
+    @isTest
+    public static void waitSeconds(){
+        Integer start = System.Now().millisecond();
+        DateTime startDateTime = System.Now();
+        while(System.Now().millisecond()< start+10000){ 
+        }
+        assert.areEqual(true,startDateTime.addSeconds(5)<system.Now(),'delay did not happen');
+    }
 }
