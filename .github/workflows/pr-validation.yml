@@ -42,9 +42,13 @@ jobs:
         echo 'y' | sfdx plugins:install sfdx-hardis
         echo 'y' | sfdx plugins:install sfdx-git-delta
         sf version --verbose --json
+    # Calculate delta
+    - name: Calculate delta
+      run: |
+        mkdir changed-sources
+        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
     # Login & check deploy runnning All Tests
     - name: Login & Simulate deployment - All Tests
-      if: ${{env.APEX_TESTS == 'all'}}
       env:
         SFDX_CLIENT_ID_MAIN: ${{ secrets.SFDX_CLIENT_ID_MAIN}}
         SFDX_CLIENT_KEY_MAIN: ${{ secrets.SFDX_CLIENT_KEY_MAIN}}
@@ -55,11 +59,10 @@ jobs:
         CONFIG_BRANCH: ${{ github.event.pull_request.base.ref }} # Defines the target branch of the PR
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         FORCE_COLOR: "1"
+      if: ${{env.APEX_TESTS == 'all'}}
       run: |
-        mkdir changed-sources
-        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         sfdx hardis:auth:login
-        sfdx hardis:project:deploy:sources:dx --check -p "changed-sources/force-app/package.xml"
+        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         
     # Login & check deploy runnning Selected Tests
     - name: Login & Simulate deployment - Selected Tests
@@ -75,7 +78,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         FORCE_COLOR: "1"
       run: |
-        mkdir changed-sources
-        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         sfdx hardis:auth:login
         sfdx hardis:project:deploy:sources:dx --check -p "changed-sources/force-app"  --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
