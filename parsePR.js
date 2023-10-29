@@ -14,9 +14,9 @@ async function extractTests(){
 
     for await (const line of lines) {
         //special delimeter for apex tests
-        if(line.includes('Apex::-') && line.includes('-::Apex')){
+        if(line.includes('Apex::[') && line.includes(']::Apex')){
 
-            let tests = line.substring(8,line.length-7);
+            let tests = line.substring(8,line.length-7).replaceAll("[","");
             await fs.promises.writeFile(testsFile,tests);
             await fs.promises.appendFile(testsFile,'\n');
         }
