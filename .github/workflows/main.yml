@@ -52,5 +52,5 @@ jobs:
       run: |
         sfdx auth:sfdxurl:store -f ./AUTH_SECRET.txt -s -a targetOrg
         echo "Simulate SFDX deployment using Hardis against \"$CONFIG_BRANCH\""
-        sfdx hardis:auth:login
+        sfdx hardis:auth:login -d
         sfdx hardis:project:deploy:sources:dx --check
