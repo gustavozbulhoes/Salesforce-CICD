@@ -33,10 +33,6 @@ jobs:
         echo 'y' | sfdx plugins:install sfdx-essentials
         echo 'y' | sfdx plugins:install sfdx-git-delta
         sf version --verbose --json
-
-    - name: Populate auth file with SFDX_URL secret of target org
-      run: |
-        echo ${{ secrets.AUTH_SECRET}} > ./AUTH_SECRET.txt
     # Login & check deploy with test classes & code coverage
     - name: Login & Simulate deployment
       env:
@@ -50,7 +46,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         FORCE_COLOR: "1"
       run: |
-        sfdx auth:sfdxurl:store -f ./AUTH_SECRET.txt -s -a targetOrg
         echo "Simulate SFDX deployment using Hardis against \"$CONFIG_BRANCH\""
         sfdx hardis:auth:login -d
         sfdx hardis:project:deploy:sources:dx --check
