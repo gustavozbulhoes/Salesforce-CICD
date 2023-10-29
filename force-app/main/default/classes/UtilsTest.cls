@@ -28,11 +28,9 @@ public class UtilsTest {
     }
 
     @isTest
-    public static void waitSeconds(){
+    public static void wait(){
         Integer start = System.Now().millisecond();
-        DateTime startDateTime = System.Now();
-        while(System.Now().millisecond()< start+5000){ 
-        }
-        assert.areEqual(true,startDateTime.addSeconds(2)<system.Now(),'delay did not happen');
+        Utils.wait(300);
+        assert.areEqual(true,start<system.Now().millisecond(),'delay did not happen');
     }
 }
