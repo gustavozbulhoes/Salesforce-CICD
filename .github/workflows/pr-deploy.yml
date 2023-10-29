@@ -46,6 +46,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         FORCE_COLOR: "1"
       run: |
-        echo "SFDX deployment using Hardis against \"$CONFIG_BRANCH\""
+        echo "SFDX deployment using sfdx Hardis against \"$CONFIG_BRANCH\""
+        mkdir changed-sources
+        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         sfdx hardis:auth:login -d
-        sfdx hardis:project:deploy:sources:dx
+        sfdx hardis:project:deploy:sources:dx -p "changed-sources/force-app/package.xml"
