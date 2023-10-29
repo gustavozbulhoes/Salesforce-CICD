@@ -5,9 +5,10 @@ name: Mega-Linter
 
 on:
   # Trigger mega-linter at every push. Action will also be visible from Pull Requests to master
-  push: # Comment this line to trigger action only on pull-requests (not recommended if you don't pay for GH Actions)
+  # push: Comment this line to trigger action only on pull-requests (not recommended if you don't pay for GH Actions)
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened,closed]
 
 env: # Comment env block if you do not want to apply fixes
   # Apply linter fixes configuration
@@ -21,6 +22,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.event.pull_request.merged == true
     name: Mega-Linter
     runs-on: ubuntu-latest
     permissions:
