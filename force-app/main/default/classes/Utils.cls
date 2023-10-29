@@ -7,4 +7,9 @@ public without sharing class Utils {
         Contact c = new Contact(lastName = 'test');
         insert c;
     }
+
+    public static void createRandomAccount(){
+        Account acc = new Account(Name = 'test');
+        insert acc;
+    }
 }
