@@ -1,1 +1,0 @@
-/Users/zanattabulhoes/.local/share/sf/client/2.14.6-1f2724e/bin/node /Users/zanattabulhoes/.local/share/sf/client/2.14.6-1f2724e/bin/run hardis:config:get --level user --json[sfdx-hardis] {"installedApps":["git","openssl"],"scratchOrgAlias":null,"scratchOrgUsername":null}

@@ -1,6 +1,5 @@
 installedApps:
-  - git
   - openssl
+  - git
 scratchOrgAlias: null
 scratchOrgUsername: null
-userEmail: gustavozbulhoes@gmail.com
