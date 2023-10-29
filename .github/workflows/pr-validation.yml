@@ -60,4 +60,4 @@ jobs:
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         sfdx hardis:auth:login
-        sfdx hardis:source:deploy -p "changed-sources/force-app" --checkonly --testlevel RunLocalTests  --json
+        sfdx hardis:project:deploy:sources:dx --check -p "changed-sources/force-app/package.xml"
