@@ -1,3 +1,4 @@
+//comment
 public without sharing class Utils {
     public static integer getSum(Integer a, Integer b) {
         return a+b;
@@ -16,11 +17,5 @@ public without sharing class Utils {
     public static void createRandomCase(){
         Case c = new Case(Subject = 'Test');
         insert c;
-    }
-
-    public static void wait(Integer milisecToWait){
-        Integer start = System.Now().millisecond();
-        while(System.Now().millisecond()< start+milisecToWait){
-        }
     }
 }

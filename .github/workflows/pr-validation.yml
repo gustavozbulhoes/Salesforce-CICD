@@ -24,7 +24,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: "18"
-    # tests to run -> Ideia is use sfdx-hardis only for all tests and use in-house selected tests
+    # tests to run -> Implement selected tests with sfdx-hardis
     - name: 'Selecting Tests to Run from PR Body'
       env:
         PR_BODY: ${{github.event.pull_request.body}}´
@@ -34,13 +34,13 @@ jobs:
         cat testsToRun.txt           
         TESTS=$(cat testsToRun.txt)       
         echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV    
+    
     # SFDX & plugins
     - name: Install SFDX and plugins
       run: |
         npm install --no-cache @salesforce/cli --global
         sf plugins install @salesforce/plugin-packaging
         echo 'y' | sfdx plugins:install sfdx-hardis
-        echo 'y' | sfdx plugins:install sfdx-essentials
         echo 'y' | sfdx plugins:install sfdx-git-delta
         sf version --verbose --json
     # Login & check deploy with test classes & code coverage
@@ -56,6 +56,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         FORCE_COLOR: "1"
       run: |
-        echo "Simulate SFDX deployment using Hardis against \"$CONFIG_BRANCH\""
-        sfdx hardis:auth:login -d
-        sfdx hardis:project:deploy:sources:dx --check
+        mkdir changed-sources
+        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
+        sfdx hardis:auth:login
+        sfdx hardis:project:deploy:sources:dx --check -p "changed-sources/force-app/package.xml"

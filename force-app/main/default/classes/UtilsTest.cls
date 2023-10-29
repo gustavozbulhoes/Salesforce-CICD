@@ -26,11 +26,4 @@ public class UtilsTest {
         List<Case> cases = [SELECT Id FROM Case LIMIT 1];
         assert.areEqual(false,cases.isEmpty(),'case was not created');
     }
-
-    @isTest
-    public static void wait(){
-        Integer start = System.Now().millisecond();
-        Utils.wait(300);
-        assert.areEqual(true,start<system.Now().millisecond(),'delay did not happen');
-    }
 }

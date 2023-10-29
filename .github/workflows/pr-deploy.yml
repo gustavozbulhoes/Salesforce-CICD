@@ -31,10 +31,9 @@ jobs:
         npm install --no-cache @salesforce/cli --global
         sf plugins install @salesforce/plugin-packaging
         echo 'y' | sfdx plugins:install sfdx-hardis
-        echo 'y' | sfdx plugins:install sfdx-essentials
         echo 'y' | sfdx plugins:install sfdx-git-delta
         sf version --verbose --json
-    # Login & check deploy with test classes & code coverage
+    # Login & execute deploy
     - name: Login & Deploy
       env:
         SFDX_CLIENT_ID_MAIN: ${{ secrets.SFDX_CLIENT_ID_MAIN}}
@@ -47,6 +46,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         FORCE_COLOR: "1"
       run: |
-        echo "SFDX deployment using Hardis against \"$CONFIG_BRANCH\""
+        echo "SFDX deployment using sfdx Hardis against \"$CONFIG_BRANCH\""
+        mkdir changed-sources
+        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         sfdx hardis:auth:login -d
-        sfdx hardis:project:deploy:sources:dx
+        sfdx hardis:project:deploy:sources:dx -p "changed-sources/force-app/package.xml"
