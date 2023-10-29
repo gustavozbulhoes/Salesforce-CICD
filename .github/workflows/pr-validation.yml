@@ -38,6 +38,7 @@ jobs:
     # SFDX & plugins
     - name: Install SFDX and plugins
       run: |
+        npm install --no-cache @salesforce/cli --global
         sf plugins install @salesforce/plugin-packaging
         echo 'y' | sfdx plugins:install sfdx-hardis
         echo 'y' | sfdx plugins:install sfdx-git-delta
