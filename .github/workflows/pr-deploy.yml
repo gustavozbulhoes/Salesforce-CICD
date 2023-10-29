@@ -6,8 +6,7 @@ on:
     types: [closed]
     paths:
       - 'force-app/**'
-    
-
+      
 name: Deploy SFDX Hardis
 
 jobs:
