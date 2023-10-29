@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [ main ]
     types: [closed]
+    paths:
+      - 'force-app/**'
+    
 
 name: Deploy SFDX Hardis
 
