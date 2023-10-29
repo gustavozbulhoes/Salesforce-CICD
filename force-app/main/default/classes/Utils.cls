@@ -18,10 +18,4 @@ public without sharing class Utils {
         Case c = new Case(Subject = 'Test');
         insert c;
     }
-
-    public static void wait(Integer milisecToWait){
-        Integer start = System.Now().millisecond();
-        while(System.Now().millisecond()< start+milisecToWait){
-        }
-    }
 }
