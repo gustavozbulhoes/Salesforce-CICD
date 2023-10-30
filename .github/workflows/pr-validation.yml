@@ -50,7 +50,6 @@ jobs:
     - name: Set sfdx-hardis Credentials
       run: |
         export SFDX_CLIENT_ID_MAIN=${{ secrets.SFDX_CLIENT_ID_MAIN}}
-        export "::set-env name=AWS_SECRET_ACCESS_KEY_SECRET_NAME::AWS_SECRET_ACCESS_KEY_${GITHUB_REF_SLUG}"
     
     # Login & check deploy runnning All Tests
     - name: Login & Simulate deployment - All Tests
