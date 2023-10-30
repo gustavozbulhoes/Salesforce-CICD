@@ -34,6 +34,10 @@ jobs:
         cat testsToRun.txt           
         TESTS=$(cat testsToRun.txt)       
         echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV    
+    # export credentials test
+    - name: Set sfdx-hardis Credentials
+      run: |
+        export SFDX_CLIENT_ID_MAIN=${{ secrets.SFDX_CLIENT_ID_MAIN}}
     # SFDX & plugins
     - name: Install SFDX and plugins
       run: |
@@ -47,9 +51,6 @@ jobs:
       run: |
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
-    - name: Set sfdx-hardis Credentials
-      run: |
-        export SFDX_CLIENT_ID_MAIN=${{ secrets.SFDX_CLIENT_ID_MAIN}}
     
     # Login & check deploy runnning All Tests
     - name: Login & Simulate deployment - All Tests
