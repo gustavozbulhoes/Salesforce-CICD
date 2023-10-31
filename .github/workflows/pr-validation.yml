@@ -53,7 +53,6 @@ jobs:
     - name: Configure delta changes for sfdx-hardis (package and destructive)
       run: |
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
-        echo $(cat changed-sources/destructiveChanges/destructiveChanges.xml) > manifest/destructiveChanges.xml
     # Login & check deploy runnning All Tests
     - name: Login & Simulate delta deployment - All Tests
       env:
@@ -86,3 +85,6 @@ jobs:
       run: |
         sfdx hardis:auth:login
         sfdx hardis:project:deploy:sources:dx -c -l RunSpecifiedTests -r ${{env.APEX_TESTS}}
+        
+    - name: 'Check destructive changes (if any)'
+      run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings 
