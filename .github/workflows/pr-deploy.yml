@@ -86,3 +86,6 @@ jobs:
       run: |
         sfdx hardis:auth:login
         sfdx hardis:project:deploy:sources:dx
+
+    - name: 'Deploy destructive changes (if any)'
+      run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --ignorewarnings 
