@@ -50,7 +50,7 @@ jobs:
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
     # Login & check deploy runnning All Tests
-    - name: Login & Simulate deployment - All Tests
+    - name: Login & Simulate delta deployment - All Tests
       env:
         SFDX_CLIENT_ID_MAIN: ${{ secrets.SFDX_CLIENT_ID_MAIN}}
         SFDX_CLIENT_KEY_MAIN: ${{ secrets.SFDX_CLIENT_KEY_MAIN}}
@@ -63,10 +63,11 @@ jobs:
         FORCE_COLOR: "1"
       if: ${{env.APEX_TESTS == 'all'}}
       run: |
+        cat changed-sources/package/package.xml
         sfdx hardis:auth:login
         sfdx hardis:project:deploy:sources:dx -p changed-sources/package/package.xml -c        
     # Login & check deploy runnning Selected Tests
-    - name: Login & Simulate deployment - Selected Tests
+    - name: Login & Simulate delta deployment - Selected Tests
       if: ${{env.APEX_TESTS != 'all'}}
       env:
         SFDX_CLIENT_ID_MAIN: ${{ secrets.SFDX_CLIENT_ID_MAIN}}
