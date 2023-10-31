@@ -64,7 +64,7 @@ jobs:
       if: ${{env.APEX_TESTS == 'all'}}
       run: |
         sfdx hardis:auth:login
-        sfdx hardis:project:deploy:sources:metadata -p changed-sources/package/package.xml -c -l RunSpecifiedTests -r ${{env.APEX_TESTS}}        
+        sfdx hardis:project:deploy:sources:dx -p changed-sources/package/package.xml -c -l RunSpecifiedTests -r ${{env.APEX_TESTS}}        
     # Login & check deploy runnning Selected Tests
     - name: Login & Simulate deployment - Selected Tests
       if: ${{env.APEX_TESTS != 'all'}}
