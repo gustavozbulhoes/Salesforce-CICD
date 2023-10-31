@@ -50,7 +50,7 @@ jobs:
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
     - name: Overwrite package.xml
       run: |
-        echo $(cat changed-sources/package/package.xml) > ./manifest/package.xml
+        $(cat changed-sources/package/package.xml) > ./manifest/package.xml
         cat /manifest/package.xml
     # Login & check deploy runnning All Tests
     - name: Login & Simulate delta deployment - All Tests
