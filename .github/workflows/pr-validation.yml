@@ -1,9 +1,10 @@
-# Add your major branches names here
-# If you do, also add SFDX_CLIENT_ID / KEY variables in job step "Login & Simulate Deployment" below
+#Based on https://ci.salto.io/ && https://sfdx-hardis.cloudity.com/
 on:
   pull_request:
     branches: [ main ]
     types: [opened, synchronize, reopened]
+    paths:
+      - 'force-app/**'
 
 name: Validation SFDX Hardis
 
@@ -47,8 +48,16 @@ jobs:
       run: |
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
+        echo $(cat changed-sources/package/package.xml) > manifest/package.xml
+    # Workaround to deploy only delta
+    - name: Configure delta changes for sfdx-hardis (package and destructive)
+      run: |
+        echo "package.xml:" $(cat hanged-sources/package/package.xml)
+        echo "post destructiveChanges.xml:"  $(cat changed-sources/destructiveChanges/destructiveChanges.xml)
+        echo $(cat changed-sources/package/package.xml) > manifest/package.xml
+        echo $(cat changed-sources/destructiveChanges/destructiveChanges.xml) > manifest/destructiveChanges.xml
     # Login & check deploy runnning All Tests
-    - name: Login & Simulate deployment - All Tests
+    - name: Login & Simulate delta deployment - All Tests
       env:
         SFDX_CLIENT_ID_MAIN: ${{ secrets.SFDX_CLIENT_ID_MAIN}}
         SFDX_CLIENT_KEY_MAIN: ${{ secrets.SFDX_CLIENT_KEY_MAIN}}
@@ -62,10 +71,9 @@ jobs:
       if: ${{env.APEX_TESTS == 'all'}}
       run: |
         sfdx hardis:auth:login
-        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
-        
+        sfdx hardis:project:deploy:sources:dx -c        
     # Login & check deploy runnning Selected Tests
-    - name: Login & Simulate deployment - Selected Tests
+    - name: Login & Simulate delta deployment - Selected Tests
       if: ${{env.APEX_TESTS != 'all'}}
       env:
         SFDX_CLIENT_ID_MAIN: ${{ secrets.SFDX_CLIENT_ID_MAIN}}
@@ -79,4 +87,4 @@ jobs:
         FORCE_COLOR: "1"
       run: |
         sfdx hardis:auth:login
-        sfdx hardis:project:deploy:sources:dx --check -p "changed-sources/force-app"  --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
+        sfdx hardis:project:deploy:sources:dx -c -l RunSpecifiedTests -r ${{env.APEX_TESTS}}
