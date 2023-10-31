@@ -34,12 +34,12 @@ jobs:
         echo 'y' | sfdx plugins:install sfdx-hardis
         echo 'y' | sfdx plugins:install sfdx-git-delta
         sf version --verbose --json
-
     # Calculate delta
-    - name: Calculate delta
+    - name: Calculate delta && Overwrite manifest/package.xml with only delta
       run: |
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
+        echo $(cat changed-sources/package/package.xml) > manifest/package.xml
     # Login & execute deploy
     - name: Login & Deploy
       env:
