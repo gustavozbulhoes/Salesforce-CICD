@@ -53,7 +53,7 @@ jobs:
         cat manifest/package.xml
         cat changed-sources/package/package.xml
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
-        cat /manifest/package.xml
+        cat manifest/package.xml
     # Login & check deploy runnning All Tests
     - name: Login & Simulate delta deployment - All Tests
       env:
