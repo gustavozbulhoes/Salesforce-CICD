@@ -1,5 +1,4 @@
-# Add your major branches names here
-# If you do, also add SFDX_CLIENT_ID / KEY variables in job step "Login & Simulate Deployment" below
+#Based on https://ci.salto.io/ && https://sfdx-hardis.cloudity.com/
 on:
   pull_request:
     branches: [ main ]
@@ -35,6 +34,12 @@ jobs:
         echo 'y' | sfdx plugins:install sfdx-hardis
         echo 'y' | sfdx plugins:install sfdx-git-delta
         sf version --verbose --json
+
+    # Calculate delta
+    - name: Calculate delta
+      run: |
+        mkdir changed-sources
+        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
     # Login & execute deploy
     - name: Login & Deploy
       env:
@@ -49,7 +54,5 @@ jobs:
         FORCE_COLOR: "1"
       run: |
         echo "SFDX deployment using sfdx Hardis against \"$CONFIG_BRANCH\""
-        mkdir changed-sources
-        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         sfdx hardis:auth:login -d
         sfdx hardis:project:deploy:sources:dx -p "changed-sources/force-app/package.xml"
