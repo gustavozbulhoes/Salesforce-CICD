@@ -52,10 +52,7 @@ jobs:
     # Workaround to deploy only delta
     - name: Configure delta changes for sfdx-hardis (package and destructive)
       run: |
-        echo "package.xml:" $(cat hanged-sources/package/package.xml)
-        echo "post destructiveChanges.xml:"  $(cat changed-sources/destructiveChanges/destructiveChanges.xml)
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
-        echo $(cat changed-sources/destructiveChanges/destructiveChanges.xml) > manifest/destructiveChanges.xml
     # Login & check deploy runnning All Tests
     - name: Login & Simulate delta deployment - All Tests
       env:
@@ -71,7 +68,7 @@ jobs:
       if: ${{env.APEX_TESTS == 'all'}}
       run: |
         sfdx hardis:auth:login
-        sfdx hardis:project:deploy:sources:dx -c        
+        sfdx hardis:project:deploy:sources:dx -c     
     # Login & check deploy runnning Selected Tests
     - name: Login & Simulate delta deployment - Selected Tests
       if: ${{env.APEX_TESTS != 'all'}}
