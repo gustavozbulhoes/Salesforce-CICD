@@ -4,6 +4,8 @@ on:
   pull_request:
     branches: [ main ]
     types: [opened, synchronize, reopened]
+    paths:
+      - 'force-app/**'
 
 name: Validation SFDX Hardis
 
@@ -47,6 +49,11 @@ jobs:
       run: |
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
+    - name: Overwirte manifest/package.xml with delta
+      run: 
+        echo $(cat changed-sources/package/package.xml) > ./manifest/package.xml
+        cat manifest/package.xml
+
     # Login & check deploy runnning All Tests
     - name: Login & Simulate deployment - All Tests
       env:
@@ -62,7 +69,7 @@ jobs:
       if: ${{env.APEX_TESTS == 'all'}}
       run: |
         sfdx hardis:auth:login
-        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
+        sfdx hardis:source:deploy -x changed-sources/package/package.xml --wait 60 --ignorewarnings --checkonly --verbose
         
     # Login & check deploy runnning Selected Tests
     - name: Login & Simulate deployment - Selected Tests
@@ -79,4 +86,4 @@ jobs:
         FORCE_COLOR: "1"
       run: |
         sfdx hardis:auth:login
-        sfdx hardis:project:deploy:sources:dx --check -p "changed-sources/force-app"  --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
+        sfdx hardis:source:deploy -x changed-sources/package/package.xml --wait 60 --ignorewarnings --testlevel RunSpecifiedTests -r ${{env.APEX_TESTS}} --checkonly --verbose
