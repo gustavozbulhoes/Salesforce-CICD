@@ -49,11 +49,6 @@ jobs:
       run: |
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
-    - name: Overwirte manifest/package.xml with delta
-      run: 
-        echo $(cat changed-sources/package/package.xml) > ./manifest/package.xml
-        cat manifest/package.xml
-
     # Login & check deploy runnning All Tests
     - name: Login & Simulate deployment - All Tests
       env:
@@ -69,8 +64,7 @@ jobs:
       if: ${{env.APEX_TESTS == 'all'}}
       run: |
         sfdx hardis:auth:login
-        sfdx hardis:source:deploy -x changed-sources/package/package.xml --wait 60 --ignorewarnings --checkonly --verbose
-        
+        sfdx hardis:project:deploy:sources:metadata -p changed-sources/package/package.xml -c -l RunSpecifiedTests -r ${{env.APEX_TESTS}}        
     # Login & check deploy runnning Selected Tests
     - name: Login & Simulate deployment - Selected Tests
       if: ${{env.APEX_TESTS != 'all'}}
