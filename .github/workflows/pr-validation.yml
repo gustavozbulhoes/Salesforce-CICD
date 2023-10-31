@@ -52,7 +52,7 @@ jobs:
     # Workaround to deploy only delta
     - name: Configure delta changes for sfdx-hardis (package and destructive)
       run: |
-        echo "package.xml:" $(cat hanged-sources/package/package.xml)
+        echo "package.xml:" $(cat changed-sources/package/package.xml)
         echo "post destructiveChanges.xml:"  $(cat changed-sources/destructiveChanges/destructiveChanges.xml)
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
         echo $(cat changed-sources/destructiveChanges/destructiveChanges.xml) > manifest/destructiveChanges.xml
