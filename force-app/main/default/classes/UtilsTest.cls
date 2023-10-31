@@ -1,4 +1,4 @@
-//comment .
+//comment
 @isTest
 public class UtilsTest {
     @isTest
