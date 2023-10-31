@@ -53,12 +53,7 @@ jobs:
     # Workaround to deploy only delta
     - name: Configure delta changes for sfdx-hardis (package and destructive)
       run: |
-        echo "package.xml:" 
-        cat changed-sources/package/package.xml
-        echo "post destructiveChanges.xml:"  
-        cat changed-sources/destructiveChanges/destructiveChanges.xml
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
-        echo $(cat changed-sources/destructiveChanges/destructiveChanges.xml) > manifest/destructiveChanges.xml
     # Login & check deploy runnning All Tests
     - name: Login & Simulate delta deployment - All Tests
       env:
@@ -74,7 +69,7 @@ jobs:
       if: ${{env.APEX_TESTS == 'all'}}
       run: |
         sfdx hardis:auth:login
-        sfdx hardis:project:deploy:sources:dx        
+        sfdx hardis:project:deploy:sources:dx   
     # Login & check deploy runnning Selected Tests
     - name: Login & Simulate delta deployment - Selected Tests
       if: ${{env.APEX_TESTS != 'all'}}
@@ -90,4 +85,4 @@ jobs:
         FORCE_COLOR: "1"
       run: |
         sfdx hardis:auth:login
-        sfdx hardis:project:deploy:sources:dx -l RunSpecifiedTests -r ${{env.APEX_TESTS}}
+        sfdx hardis:project:deploy:sources:dx
