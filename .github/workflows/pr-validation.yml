@@ -71,7 +71,7 @@ jobs:
       if: ${{env.APEX_TESTS == 'all'}}
       run: |
         sfdx hardis:auth:login
-        sfdx hardis:project:deploy:sources:dx -c        
+        sfdx hardis:project:deploy:sources:dx -c -p changed-sources/package/package.xml     
     # Login & check deploy runnning Selected Tests
     - name: Login & Simulate delta deployment - Selected Tests
       if: ${{env.APEX_TESTS != 'all'}}
@@ -87,4 +87,4 @@ jobs:
         FORCE_COLOR: "1"
       run: |
         sfdx hardis:auth:login
-        sfdx hardis:project:deploy:sources:dx -c -l RunSpecifiedTests -r ${{env.APEX_TESTS}}
+        sfdx hardis:project:deploy:sources:dx -p changed-sources/package/package.xml -c -l RunSpecifiedTests -r ${{env.APEX_TESTS}}
