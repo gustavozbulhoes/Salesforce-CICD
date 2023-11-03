@@ -1,4 +1,4 @@
-# SFDX Hardis project
+# Salesforce CI/CD Project:
 
 This repository contains the source code for a custom CI/CD process for Salesforce using Github Actions combining:
  - [Pablo Gonzales ideias](https://www.pablogonzalez.io/)
