@@ -44,7 +44,7 @@ jobs:
         echo 'y' | sfdx plugins:install sfdx-hardis
         echo 'y' | sfdx plugins:install sfdx-git-delta
         sf version --verbose --json
-    # Calculate delta nd set package.xml = delta.xml to deploy only delta changes
+    # Calculate delta and set package.xml = delta.xml to deploy only delta changes
     - name: Configure delta changes for sfdx-hardis
       run: |
         mkdir changed-sources
