@@ -1,4 +1,4 @@
-//comment .
+//Used only for test deploys
 @isTest
 public class UtilsTest {
     @isTest

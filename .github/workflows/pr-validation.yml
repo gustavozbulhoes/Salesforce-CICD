@@ -43,15 +43,11 @@ jobs:
         echo 'y' | sfdx plugins:install sfdx-hardis
         echo 'y' | sfdx plugins:install sfdx-git-delta
         sf version --verbose --json
-    # Calculate delta
-    - name: Calculate delta
+    # Calculate delta nd set package.xml = delta.xml to deploy only delta changes
+    - name: Configure delta changes for sfdx-hardis
       run: |
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
-        echo $(cat changed-sources/package/package.xml) > manifest/package.xml
-    # Workaround to deploy only delta
-    - name: Configure delta changes for sfdx-hardis (package.xml == delta.xml)
-      run: |
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
     # Login & check deploy runnning All Tests
     - name: Login & Simulate delta deployment - All Tests
