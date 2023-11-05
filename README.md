@@ -1,6 +1,6 @@
 # Salesforce CI/CD Project:
 
-This repository contains the source code for a custom CI/CD process for Salesforce using Github Actions combining:
+This repository contains the source code for a custom Salesforce CI/CD process using Github Actions combining:
  - [Pablo Gonzales ideias](https://www.pablogonzalez.io/)
  - [sfdx-hardis](https://sfdx-hardis.cloudity.com/)
 
