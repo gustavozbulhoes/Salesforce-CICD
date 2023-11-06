@@ -81,7 +81,7 @@ jobs:
         FORCE_COLOR: "1"
       run: |
         sfdx hardis:auth:login
-        sfdx hardis:project:deploy:sources:dx
+        sfdx hardis:project:deploy:sources:dx -c -l RunSpecifiedTests -r ${{env.APEX_TESTS}}
 
     - name: 'Deploy destructive changes (if any)'
       run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --ignorewarnings 
