@@ -60,18 +60,20 @@ jobs:
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
-    # Login & check deploy runnning All Tests
-    - name: Login & Simulate delta deployment - All Tests
+    #login
+    - name: Salesforce Authentication
+      run:
+        sfdx hardis:auth:login
+    # Check deploy runnning All Tests
+    - name: Simulate delta deployment - All Tests
       if: ${{env.APEX_TESTS == 'all'}}
-      run: |
-        sfdx hardis:auth:login
-        sfdx hardis:project:deploy:sources:dx   
-    # Login & check deploy runnning Selected Tests
-    - name: Login & Simulate delta deployment - Selected Tests
+      run:
+        sfdx hardis:project:deploy:sources:dx
+    # Check deploy runnning Selected Tests
+    - name: Simulate delta deployment - Selected Tests
       if: ${{env.APEX_TESTS != 'all'}}
-      run: |
-        sfdx hardis:auth:login
+      run:
         sfdx hardis:project:deploy:sources:dx -l RunSpecifiedTests -r ${{env.APEX_TESTS}}
-
-    - name: 'Deploy destructive changes (if any)'
-      run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --ignorewarnings 
+    # Separate async destructive    
+    - name: 'Check destructive changes (if any)'
+      run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --ignorewarnings
