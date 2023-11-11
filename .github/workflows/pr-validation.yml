@@ -6,7 +6,7 @@ on:
     paths:
       - 'force-app/**'
 
-name: Validation SFDX Hardis
+name: Validate Production Deploy
 
 jobs:
   check_deployment:
@@ -44,25 +44,34 @@ jobs:
         node ./parsePR.js   
         cat testsToRun.txt           
         TESTS=$(cat testsToRun.txt)       
-        echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV    
-    # SFDX & plugins
-    - name: Install SFDX and plugins
+        echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
+      # Install plugins and authenticate based on selected tests
+      - name: Install Plugins and Athenticate with Salesforce
       run: |
-        npm install --no-cache @salesforce/cli --global
-        sf plugins install @salesforce/plugin-packaging
-        echo 'y' | sfdx plugins:install sfdx-hardis
-        echo 'y' | sfdx plugins:install sfdx-git-delta
-        sf version --verbose --json
+        if [ "${{ env.APEX_TESTS }}" == 'all' ]; then
+          # Install sfdx hardis plugins and authenticate - longer validation with quickdeploy
+          npm install --no-cache @salesforce/cli --global
+          sf plugins install @salesforce/plugin-packaging
+          echo 'y' | sfdx plugins:install sfdx-hardis
+          echo 'y' | sfdx plugins:install sfdx-git-delta
+          sfdx hardis:auth:login
+        else
+          # Install only minimum plugins and authenticate - faster validation with selected tests
+          wget
+          https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
+          mkdir ~/sfdx
+          tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
+          echo "$HOME/sfdx/bin" >> $GITHUB_PATH
+          ~/sfdx/bin/sfdx version
+          echo ${{ secrets.AUTH_SECRET_STAGING}} > ./AUTH_SECRET_STAGING.txt
+          sfdx auth:sfdxurl:store -f ./AUTH_SECRET_STAGING.txt -s -a targetOrg
+        fi
     # Calculate delta and set package.xml = delta.xml to deploy only delta changes
     - name: Configure delta changes for sfdx-hardis
       run: |
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
-    #login
-    - name: Salesforce Authentication
-      run:
-        sfdx hardis:auth:login
     # Check deploy runnning All Tests
     - name: Simulate delta deployment - All Tests
       if: ${{env.APEX_TESTS == 'all'}}
@@ -72,7 +81,7 @@ jobs:
     - name: Simulate delta deployment - Selected Tests
       if: ${{env.APEX_TESTS != 'all'}}
       run:
-        sfdx hardis:project:deploy:sources:dx -c -l RunSpecifiedTests -r ${{env.APEX_TESTS}}
+        sfdx force:source:deploy -p "changed-sources/force-app" --checkonly --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
     # Separate async destructive    
     - name: 'Check destructive changes (if any)'
       run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings
