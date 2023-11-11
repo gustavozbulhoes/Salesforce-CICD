@@ -60,6 +60,7 @@ jobs:
       run: |
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
+        echo $(cat changed-sources/package/package.xml) > manifest/package.xml
     # Authentication
     - name: Salesforce Authentication (sfdx-hardis)
       if: ${{env.APEX_TESTS == 'all'}}
@@ -74,7 +75,6 @@ jobs:
     - name: Simulate delta deployment - All Tests
       if: ${{env.APEX_TESTS == 'all'}}
       run:
-        echo $(cat changed-sources/package/package.xml) > manifest/package.xml
         sfdx hardis:project:deploy:sources:dx -c
     # Check deploy runnning Selected Tests
     - name: Simulate delta deployment - Selected Tests (Fast validation)
