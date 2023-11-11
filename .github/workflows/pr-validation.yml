@@ -46,17 +46,15 @@ jobs:
         TESTS=$(cat testsToRun.txt)       
         echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
     # Install plugins
-    - name: Install Salesforce CLI
+    - name: Install Salesforce CLI And Git Delta
       run: |
         npm install --no-cache @salesforce/cli --global
+        echo 'y' | sfdx plugins:install sfdx-git-delta
     - name: Install sfdx-hardis Plugin
       if: ${{env.APEX_TESTS == 'all'}}
       run: |
         sf plugins install @salesforce/plugin-packaging
         echo 'y' | sfdx plugins:install sfdx-hardis
-    - name: Install Git Delta
-      run: |
-        echo 'y' | sfdx plugins:install sfdx-git-delta
     # Calculate delta and set package.xml = delta.xml to deploy only delta changes
     - name: Calculate delta
       run: |
