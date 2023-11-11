@@ -15,14 +15,14 @@ jobs:
     permissions:
       pull-requests: write
     env:
-      SFDX_CLIENT_ID_MAIN: ${{ secrets.SFDX_CLIENT_ID_MAIN}}
-      SFDX_CLIENT_KEY_MAIN: ${{ secrets.SFDX_CLIENT_KEY_MAIN}}
+      SFDX_CLIENT_ID_MAIN: ${{secrets.SFDX_CLIENT_ID_MAIN}}
+      SFDX_CLIENT_KEY_MAIN: ${secrets.SFDX_CLIENT_KEY_MAIN}}
       SFDX_DEPLOY_WAIT_MINUTES: 120
       SFDX_TEST_WAIT_MINUTES: 120
-      CI_COMMIT_REF_NAME: ${{ github.event.pull_request.base.ref }} # Defines the target branch of the PR
-      ORG_ALIAS: ${{ github.event.pull_request.base.ref }} # Defines the target branch of the PR
-      CONFIG_BRANCH: ${{ github.event.pull_request.base.ref }} # Defines the target branch of the PR
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CI_COMMIT_REF_NAME: ${{github.event.pull_request.base.ref}} # Defines the target branch of the PR
+      ORG_ALIAS: ${{github.event.pull_request.base.ref}} # Defines the target branch of the PR
+      CONFIG_BRANCH: ${{github.event.pull_request.base.ref}} # Defines the target branch of the PR
+      GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       FORCE_COLOR: "1"
     steps:
     # Checkout repo
@@ -45,24 +45,22 @@ jobs:
         cat testsToRun.txt           
         TESTS=$(cat testsToRun.txt)       
         echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
-      # Install plugins and authenticate based on selected tests
-    - name: Install Plugins (sfdx-hardis)
-      if: ${{env.APEX_TESTS == 'all'}}
+    # Install plugins
+    - name: Install basic plugins
       run: |
         npm install --no-cache @salesforce/cli --global
+        echo 'y' | sfdx plugins:install sfdx-git-delta
+    - name: Install sfdx-hardis Plugin
+      if: ${{env.APEX_TESTS == 'all'}}
+      run: |
         sf plugins install @salesforce/plugin-packaging
         echo 'y' | sfdx plugins:install sfdx-hardis
-        echo 'y' | sfdx plugins:install sfdx-git-delta
-    - name: Install Plugins (Minimum plugins for fast validation)
-      if: ${{env.APEX_TESTS != 'all'}}
+    # Calculate delta and set package.xml = delta.xml to deploy only delta changes
+    - name: Calculate delta
       run: |
-        wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
-        mkdir ~/sfdx
-        tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
-        echo "$HOME/sfdx/bin" >> $GITHUB_PATH
-        ~/sfdx/bin/sfdx version
-        echo y | sfdx plugins:install sfdx-git-delta
-        sfdx plugins
+        mkdir changed-sources
+        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
+    # Authentication
     - name: Salesforce Authentication (sfdx-hardis)
       if: ${{env.APEX_TESTS == 'all'}}
       run: |
@@ -72,11 +70,6 @@ jobs:
       run: |
         echo ${{ secrets.AUTH_SECRET}} > ./AUTH_SECRET.txt
         sfdx auth:sfdxurl:store -f ./AUTH_SECRET.txt -s -a targetOrg
-    # Calculate delta and set package.xml = delta.xml to deploy only delta changes
-    - name: Calculate delta
-      run: |
-        mkdir changed-sources
-        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
     # Check deploy runnning All Tests
     - name: Simulate delta deployment - All Tests
       if: ${{env.APEX_TESTS == 'all'}}
