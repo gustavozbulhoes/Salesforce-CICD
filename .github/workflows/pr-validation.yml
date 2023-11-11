@@ -36,7 +36,7 @@ jobs:
       with:
         node-version: "18"
     # tests to run
-    - name: Selecting Tests to Run from PR Body
+    - name: Selecting Tests to Run from PR Body and install sfdx-git delta
       env:
         PR_BODY: ${{github.event.pull_request.body}}
       run: |
@@ -45,6 +45,7 @@ jobs:
         cat testsToRun.txt           
         TESTS=$(cat testsToRun.txt)       
         echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
+        echo 'y' | sfdx plugins:install sfdx-git-delta
       # Install plugins and authenticate based on selected tests
     - name: Install Plugins (sfdx-hardis)
       if: ${{env.APEX_TESTS == 'all'}}
@@ -52,7 +53,6 @@ jobs:
         npm install --no-cache @salesforce/cli --global
         sf plugins install @salesforce/plugin-packaging
         echo 'y' | sfdx plugins:install sfdx-hardis
-        echo 'y' | sfdx plugins:install sfdx-git-delta
     - name: Install Plugins (Minimum plugins for fast validation)
       if: ${{env.APEX_TESTS != 'all'}}
       run: |
