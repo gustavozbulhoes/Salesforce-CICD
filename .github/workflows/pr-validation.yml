@@ -56,9 +56,8 @@ jobs:
         sfdx hardis:auth:login
     - name: Install Plugins and Athenticate with Salesforce (Minimum plugins for fast validation)
       if: ${{env.APEX_TESTS != 'all'}}
-      run: >
-        wget
-        https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
+      run: |
+        wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
         mkdir ~/sfdx
         tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
         echo "$HOME/sfdx/bin" >> $GITHUB_PATH
