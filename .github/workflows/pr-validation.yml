@@ -36,7 +36,7 @@ jobs:
       with:
         node-version: "18"
     # tests to run
-    - name: 'Selecting Tests to Run from PR Body'
+    - name: Selecting Tests to Run from PR Body
       env:
         PR_BODY: ${{github.event.pull_request.body}}
       run: |
