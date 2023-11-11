@@ -1,7 +1,6 @@
-#Based on https://ci.salto.io/ && https://sfdx-hardis.cloudity.com/
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
     types: [opened, synchronize, reopened]
     paths:
       - 'force-app/**'
@@ -19,68 +18,63 @@ jobs:
       SFDX_CLIENT_KEY_MAIN: ${{secrets.SFDX_CLIENT_KEY_MAIN}}
       SFDX_DEPLOY_WAIT_MINUTES: 120
       SFDX_TEST_WAIT_MINUTES: 120
-      CI_COMMIT_REF_NAME: ${{github.event.pull_request.base.ref}} # Defines the target branch of the PR
-      ORG_ALIAS: ${{github.event.pull_request.base.ref}} # Defines the target branch of the PR
-      CONFIG_BRANCH: ${{github.event.pull_request.base.ref}} # Defines the target branch of the PR
+      CI_COMMIT_REF_NAME: ${{github.event.pull_request.base.ref}}
+      ORG_ALIAS: ${{github.event.pull_request.base.ref}}
+      CONFIG_BRANCH: ${{github.event.pull_request.base.ref}}
       GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       FORCE_COLOR: "1"
+
     steps:
-    # Checkout repo
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0 # Faster code checkout fetching only latest commit
-    # Setup node
+        fetch-depth: 0
+
     - name: Setup Node
       uses: actions/setup-node@v3
       with:
         node-version: "18"
-    # tests to run
+
     - name: Selecting Tests to Run from PR Body
-      env:
-        PR_BODY: ${{github.event.pull_request.body}}
       run: |
-        echo $PR_BODY > ./pr_body.txt
-        node ./parsePR.js   
-        cat testsToRun.txt           
-        TESTS=$(cat testsToRun.txt)       
+        echo ${{github.event.pull_request.body}} > ./pr_body.txt
+        node ./parsePR.js
+        TESTS=$(cat testsToRun.txt)
         echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
-    # Install plugins
+
     - name: Install Salesforce CLI And Git Delta
       run: |
         npm install --no-cache @salesforce/cli --global
         echo 'y' | sfdx plugins:install sfdx-git-delta
+
     - name: Install sfdx-hardis Plugin
       if: ${{env.APEX_TESTS == 'all'}}
       run: |
         sf plugins install @salesforce/plugin-packaging
         echo 'y' | sfdx plugins:install sfdx-hardis
-    # Calculate delta and set package.xml = delta.xml to deploy only delta changes
+
     - name: Calculate delta
       run: |
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
-    # Authentication
-    - name: Salesforce Authentication (sfdx-hardis)
-      if: ${{env.APEX_TESTS == 'all'}}
+
+    - name: Salesforce Authentication
       run: |
-        sfdx hardis:auth:login
-    - name: Salesforce Authentication (fast-validation)
-      if: ${{env.APEX_TESTS != 'all'}}
+        if [ "${{env.APEX_TESTS}}" == 'all' ]; then
+          sfdx hardis:auth:login
+        else
+          echo ${{ secrets.AUTH_SECRET}} > ./AUTH_SECRET.txt
+          sfdx auth:sfdxurl:store -f ./AUTH_SECRET.txt -s -a targetOrg
+        fi
+
+    - name: Simulate delta deployment
       run: |
-        echo ${{ secrets.AUTH_SECRET}} > ./AUTH_SECRET.txt
-        sfdx auth:sfdxurl:store -f ./AUTH_SECRET.txt -s -a targetOrg
-    # Check deploy runnning All Tests
-    - name: Simulate delta deployment - All Tests
-      if: ${{env.APEX_TESTS == 'all'}}
-      run:
-        sfdx hardis:project:deploy:sources:dx -c
-    # Check deploy runnning Selected Tests
-    - name: Simulate delta deployment - Selected Tests (Fast validation)
-      if: ${{env.APEX_TESTS != 'all'}}
-      run:
-        sfdx force:source:deploy -p "changed-sources/force-app" --checkonly --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
-    # Separate async destructive    
+        if [ "${{env.APEX_TESTS}}" == 'all' ]; then
+          sfdx hardis:project:deploy:sources:dx -c
+        else
+          sfdx force:source:deploy -p "changed-sources/force-app" --checkonly --testlevel RunSpecifiedTests --runtests ${{env.APEX_TESTS}} --json
+        fi
+
     - name: 'Check destructive changes (if any)'
       run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings
