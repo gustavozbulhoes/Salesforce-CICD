@@ -38,7 +38,7 @@ jobs:
     # tests to run
     - name: 'Selecting Tests to Run from PR Body'
       env:
-        PR_BODY: ${{github.event.pull_request.body}}´
+        PR_BODY: ${{github.event.pull_request.body}}
       run: |
         echo $PR_BODY > ./pr_body.txt
         node ./parsePR.js   
