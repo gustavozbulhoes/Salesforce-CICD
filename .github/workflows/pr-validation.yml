@@ -66,7 +66,7 @@ jobs:
       if: ${{env.APEX_TESTS == 'all'}}
       run: |
         sfdx hardis:auth:login
-    - name: Salesforce Authentication (fast-deploy)
+    - name: Salesforce Authentication (fast-validation)
       if: ${{env.APEX_TESTS != 'all'}}
       run: |
         echo ${{ secrets.AUTH_SECRET}} > ./AUTH_SECRET.txt
