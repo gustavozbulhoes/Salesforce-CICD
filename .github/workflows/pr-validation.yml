@@ -53,7 +53,6 @@ jobs:
     - name: Install sfdx-hardis Plugin
       if: ${{env.APEX_TESTS == 'all'}}
       run: |
-        sf plugins install @salesforce/plugin-packaging
         echo 'y' | sfdx plugins:install sfdx-hardis
     # Calculate delta and set package.xml = delta.xml to deploy only delta changes
     - name: Calculate delta
