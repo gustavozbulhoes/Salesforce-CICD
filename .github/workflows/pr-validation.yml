@@ -46,15 +46,14 @@ jobs:
         TESTS=$(cat testsToRun.txt)       
         echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
       # Install plugins and authenticate based on selected tests
-    - name: Install Plugins and Athenticate with Salesforce (sfdx-hardis)
+    - name: Install Plugins (sfdx-hardis)
       if: ${{env.APEX_TESTS == 'all'}}
       run: |
         npm install --no-cache @salesforce/cli --global
         sf plugins install @salesforce/plugin-packaging
         echo 'y' | sfdx plugins:install sfdx-hardis
         echo 'y' | sfdx plugins:install sfdx-git-delta
-        sfdx hardis:auth:login
-    - name: Install Plugins and Athenticate with Salesforce (Minimum plugins for fast validation)
+    - name: Install Plugins (Minimum plugins for fast validation)
       if: ${{env.APEX_TESTS != 'all'}}
       run: |
         wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
@@ -62,6 +61,13 @@ jobs:
         tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
         echo "$HOME/sfdx/bin" >> $GITHUB_PATH
         ~/sfdx/bin/sfdx version
+    - name: Salesforce Authentication (sfdx-hardis)
+      if: ${{env.APEX_TESTS == 'all'}}
+      run: |
+        sfdx hardis:auth:login
+    - name: Salesforce Authentication (fast-deploy)
+      if: ${{env.APEX_TESTS != 'all'}}
+      run: |
         echo ${{ secrets.AUTH_SECRET}} > ./AUTH_SECRET.txt
         sfdx auth:sfdxurl:store -f ./AUTH_SECRET.txt -s -a targetOrg
     # Calculate delta and set package.xml = delta.xml to deploy only delta changes
