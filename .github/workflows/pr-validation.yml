@@ -59,24 +59,20 @@ jobs:
       run: >
         wget
         https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
-
         mkdir ~/sfdx
-
         tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
-
         echo "$HOME/sfdx/bin" >> $GITHUB_PATH
-
         ~/sfdx/bin/sfdx version
     # Calculate delta and set package.xml = delta.xml to deploy only delta changes
-    - name: Configure delta changes for sfdx-hardis
+    - name: Calculate delta
       run: |
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
-        echo $(cat changed-sources/package/package.xml) > manifest/package.xml
     # Check deploy runnning All Tests
     - name: Simulate delta deployment - All Tests
       if: ${{env.APEX_TESTS == 'all'}}
       run:
+        echo $(cat changed-sources/package/package.xml) > manifest/package.xml
         sfdx hardis:project:deploy:sources:dx -c
     # Check deploy runnning Selected Tests
     - name: Simulate delta deployment - Selected Tests (Fast validation)
