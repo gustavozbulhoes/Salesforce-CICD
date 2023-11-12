@@ -58,7 +58,7 @@ jobs:
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
-        DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml)       
+        DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr '\n' ' ')
         echo "DESTRUCTIVE_CHANGES=$DESTRUCTIVE" >> $GITHUB_ENV    
         echo ${{env.DESTRUCTIVE_CHANGES}}
     #login
