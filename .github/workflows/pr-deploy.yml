@@ -75,4 +75,7 @@ jobs:
         sfdx hardis:project:deploy:sources:dx -l RunSpecifiedTests -r ${{env.APEX_TESTS}}
     # Separate async destructive deploy   
     - name: 'Deploy destructive changes (if any)'
-      run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --ignorewarnings
+      if: contains('$(cat changed-sources/destructiveChanges/destructiveChanges.xml)', '<types>')
+      run: |
+        cat changed-sources/destructiveChanges/destructiveChanges.xml
+        sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --ignorewarnings
