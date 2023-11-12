@@ -78,5 +78,6 @@ jobs:
     - name: 'Check destructive changes (if any)'
       if: contains('${{ env.DESTRUCTIVES }}', '<types>')
       run: |
+        echo ${{ env.DESTRUCTIVES }}
         cat changed-sources/destructiveChanges/destructiveChanges.xml
         sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings
