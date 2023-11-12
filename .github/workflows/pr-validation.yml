@@ -58,12 +58,8 @@ jobs:
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
+        DESTRUCTIVES=$(cat changed-sources/destructiveChanges/destructiveChanges.xml)    
     #login
-    - name: Search for destructive
-      id: check_destructive
-      uses: andstor/file-existence-action@v1
-      with:
-        files: "changed-sources/destructiveChanges/destructiveChanges.xml"
 
     - name: Salesforce Authentication
       run:
@@ -80,7 +76,7 @@ jobs:
         sfdx hardis:project:deploy:sources:dx -c -l RunSpecifiedTests -r ${{env.APEX_TESTS}}
     # Separate async destructive    
     - name: 'Check destructive changes (if any)'
-      if: steps.check_destructive.outputs.files_exists == 'true'
+      if: contains('${{ env.DESTRUCTIVES }}', '<types>')
       run: |
         cat changed-sources/destructiveChanges/destructiveChanges.xml
         sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings
