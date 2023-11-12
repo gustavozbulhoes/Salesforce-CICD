@@ -53,7 +53,7 @@ jobs:
         echo 'y' | sfdx plugins:install sfdx-git-delta
         sf version --verbose --json
     # Calculate delta (set package.xml = delta.xml) to deploy only delta changes and set destructive
-    - name: Configure delta changes for sfdx-hardis and Destructives for async deploy
+    - name: Configure delta changes for sfdx-hardis and Destructives
       run: |
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
