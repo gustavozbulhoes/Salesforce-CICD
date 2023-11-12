@@ -52,12 +52,15 @@ jobs:
         echo 'y' | sfdx plugins:install sfdx-hardis
         echo 'y' | sfdx plugins:install sfdx-git-delta
         sf version --verbose --json
-    # Calculate delta and set package.xml = delta.xml to deploy only delta changes
-    - name: Configure delta changes for sfdx-hardis
+    # Calculate delta (set package.xml = delta.xml) to deploy only delta changes and set destructive
+    - name: Configure delta changes for sfdx-hardis and Destructives
       run: |
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
+        DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr '\n' ' ')
+        echo "DESTRUCTIVE_CHANGES=$DESTRUCTIVE" >> $GITHUB_ENV    
+        echo "Destructive => ${{env.DESTRUCTIVE_CHANGES}}"
     #login
     - name: Salesforce Authentication
       run:
@@ -74,4 +77,7 @@ jobs:
         sfdx hardis:project:deploy:sources:dx -c -l RunSpecifiedTests -r ${{env.APEX_TESTS}}
     # Separate async destructive    
     - name: 'Check destructive changes (if any)'
-      run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings
+      if: contains('${{env.DESTRUCTIVE_CHANGES}}', '<types>')
+      run: |
+        cat changed-sources/destructiveChanges/destructiveChanges.xml
+        sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings
