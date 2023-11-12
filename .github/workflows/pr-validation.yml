@@ -59,6 +59,7 @@ jobs:
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
         echo "destructive=$(cat changed-sources/destructiveChanges/destructiveChanges.xml)" >> $DESTRUCTIVE_CHANGES
+        echo ${{env.DESTRUCTIVE_CHANGES}}
     #login
     - name: Salesforce Authentication
       run:
