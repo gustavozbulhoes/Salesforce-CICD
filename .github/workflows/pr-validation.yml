@@ -61,7 +61,7 @@ jobs:
     #login
     - name: debug destructive
       run: |
-        echo $(cat changed-sources/destructiveChanges/destructive.xml)
+        echo $(cat changed-sources/destructiveChanges/destructiveChanges.xml)
     - name: Salesforce Authentication
       run:
         sfdx hardis:auth:login
