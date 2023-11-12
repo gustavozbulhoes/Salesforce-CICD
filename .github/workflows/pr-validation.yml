@@ -72,8 +72,6 @@ jobs:
       if: ${{env.APEX_TESTS != 'all'}}
       run:
         sfdx hardis:project:deploy:sources:dx -c -l RunSpecifiedTests -r ${{env.APEX_TESTS}}
-    - name: Debug destructive
-      run: cat changed-sources/destructiveChanges/destructiveChanges.xml
     # Separate async destructive    
     - name: 'Check destructive changes (if any)'
       if: contains('$(cat changed-sources/destructiveChanges/destructiveChanges.xml)', '<types>')
