@@ -60,8 +60,6 @@ jobs:
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
         DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]''?'\''/\\')       
         echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
-    - name: 'Debug'
-      run: echo "${{env.DESTRUCTIVE_PACKAGE}}"
     #login
     - name: Salesforce Authentication
       run:

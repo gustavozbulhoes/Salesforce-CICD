@@ -59,9 +59,8 @@ jobs:
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
-        DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr '\n' ' ')
-        echo "DESTRUCTIVE_CHANGES=$DESTRUCTIVE" >> $GITHUB_ENV    
-        echo "Destructive => ${{env.DESTRUCTIVE_CHANGES}}"
+        DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]''?'\''/\\')       
+        echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
     #login
     - name: Salesforce Authentication
       run:
@@ -78,7 +77,7 @@ jobs:
         sfdx hardis:project:deploy:sources:dx -l RunSpecifiedTests -r ${{env.APEX_TESTS}}
     # Separate async destructive deploy   
     - name: 'Deploy destructive changes (if any)'
-      if: contains('${{env.DESTRUCTIVE_CHANGES}}', '<types>')
+      if: contains(env.DESTRUCTIVE_PACKAGE, '<types>')
       run: |
         cat changed-sources/destructiveChanges/destructiveChanges.xml
         sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --ignorewarnings
