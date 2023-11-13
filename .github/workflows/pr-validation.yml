@@ -61,6 +61,10 @@ jobs:
         DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]')       
         echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
     #login
+    - name: 'Debug'
+      run: |
+        if echo "${{ env.DESTRUCTIVE_PACKAGE }}" | grep -q '<types>'; then
+          echo "Destructive changes contain '<types>'"
     - name: Salesforce Authentication
       run:
         sfdx hardis:auth:login
