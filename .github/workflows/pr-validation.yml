@@ -58,10 +58,10 @@ jobs:
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
+        DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]' | tr -d '?<>\\/')       
+        echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
     - name: 'Debug'
-      run: |
-        if echo "$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]') " | grep -q '<types>'; then
-          echo "Destructive changes contain '<types>'"
+      run: echo "${{env.DESTRUCTIVE_PACKAG}}"
     #login
     - name: Salesforce Authentication
       run:
