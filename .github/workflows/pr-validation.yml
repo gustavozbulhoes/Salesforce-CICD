@@ -53,7 +53,7 @@ jobs:
         echo 'y' | sfdx plugins:install sfdx-git-delta
         sf version --verbose --json
     # Calculate delta (set package.xml = delta.xml) to deploy only delta changes and set destructive
-    - name: Configure delta changes for sfdx-hardis and Destructives
+    - name: Configure delta changes and destructive
       run: |
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
@@ -61,6 +61,9 @@ jobs:
         DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | base64 -w 0)         
         echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
     #login
+    - name: debug
+      run: |
+        echo destructive => "${{env.DESTRUCTIVE_PACKAGE}}"
     - name: Salesforce Authentication
       run:
         sfdx hardis:auth:login
