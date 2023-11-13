@@ -44,7 +44,7 @@ jobs:
         node ./parsePR.js   
         TESTS=$(cat testsToRun.txt)       
         echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV    
-        echo "{{env.APEX_TESTS}}"
+        echo "${{env.APEX_TESTS}}"
     # SFDX & plugins
     - name: Install SFDX and plugins
       run: |
