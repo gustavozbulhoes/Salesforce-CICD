@@ -60,7 +60,7 @@ jobs:
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
         DESTRUCTIVE=$(grep -q '<types>' changed-sources/destructiveChanges/destructiveChanges.xml)     
         echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
-        echo "{{env.DESTRUCTIVE_PACKAGE}}"
+        echo "${{env.DESTRUCTIVE_PACKAGE}}"
     #login
     - name: Salesforce Authentication
       run:
