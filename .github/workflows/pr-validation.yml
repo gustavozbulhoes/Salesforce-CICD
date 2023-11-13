@@ -58,7 +58,7 @@ jobs:
         mkdir changed-sources
         sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
-        DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | base64 -w 0)         
+        DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | -w 0)         
         echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
     #login
     - name: debug
@@ -79,7 +79,7 @@ jobs:
         sfdx hardis:project:deploy:sources:dx -c -l RunSpecifiedTests -r ${{env.APEX_TESTS}}
     # Separate async destructive    
     - name: 'Check destructive changes (if any)'
-      if: contains('abc', '<types>')
+      if: contains('${{env.DESTRUCTIVE_PACKAGE}}', '<types>')
       run: |
         cat changed-sources/destructiveChanges/destructiveChanges.xml
         sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings
