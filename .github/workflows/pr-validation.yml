@@ -50,8 +50,6 @@ jobs:
       run: |
         npm install --no-cache @salesforce/cli --global
         echo 'y' | sfdx plugins:install sfdx-hardis
-        echo 'y' | sfdx plugins:install sfdx-git-delta
-        sf version --verbose --json
     # Calculate delta (set package.xml = delta.xml) to deploy only delta changes and set destructive
     - name: Configure delta changes and destructive
       run: |
