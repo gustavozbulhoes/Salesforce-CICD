@@ -1,10 +1,21 @@
 //Used only for test deploys.
 @isTest
 public class UtilsTest {
+
+    @TestSetup
+    static void makeData(){
+        Account acc = new Account(Name = 'abc');
+        insert acc;
+    }
     @isTest
     public static void getSum() {
         Integer result = Utils.getSum(3,2);
         assert.areEqual(5, result,'5 was expected');
+    }
+
+    @isTest
+    public static void testPMDAlert() {
+        Utils.testPMDAlert();
     }
 
     @isTest
