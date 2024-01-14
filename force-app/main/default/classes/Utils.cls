@@ -9,14 +9,6 @@ public without sharing class Utils {
         insert c;
     }
 
-    public static void testPMDAlert(){
-        List<Account> accs = [SELECT Id FROM Account];
-        for(Account acc:accs){
-            acc.Name = 'test';
-            update acc;
-        }
-    }
-
     public static void createRandomAccount(){
         Account acc = new Account(Name = 'test');
         insert acc;
