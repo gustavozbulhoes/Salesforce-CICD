@@ -53,7 +53,7 @@ jobs:
         DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]''?'\''/\\')       
         echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
     - name: Run SFDX Scanner - Report findings as comments
-      uses: mitchspano/sfdx-scan-pull-request@v0.1.14
+      uses: mitchspano/sfdx-scan-pull-request@v0.1.9
       with:
           target: './**/*.cls'
           severity-threshold: 4
