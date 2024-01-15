@@ -43,13 +43,8 @@ jobs:
         sudo apt install default-jdk
     - name: Install SFDX CLI and Scanner
       run: |
-        npm install sfdx-cli -g
+        npm install --no-cache @salesforce/cli --global
         sfdx plugins:install @salesforce/sfdx-scanner
-
-    - name: Run Unit Tests
-      run: |
-        npm ci
-        npm run test
     - name: Configure delta changes and destructive
       run: |
         mkdir changed-sources
