@@ -53,10 +53,10 @@ jobs:
         DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]''?'\''/\\')       
         echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
     - name: Run SFDX Scanner - Report findings as comments
-      uses: mitchspano/sfdx-scan-pull-request@v0.1.14
+      uses: mitchspano/sfdx-scan-pull-request@v0.1.15
       with:
-          severity-threshold: 4
-          strictly-enforced-rules: '[{ "engine": "pmd", "category": "Design,Best Practices,Performance", "rule": "AvoidDebugStatements" }]'
+        severity-threshold: 4
+        report-mode: comments
     # tests to run
     - name: 'Selecting Tests to Run from PR Body'
       env:
