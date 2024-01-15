@@ -41,27 +41,30 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt install default-jdk
-    - name: Install salesforce-cli, sfdx-git-delta and sfdx-scanner
-      run: |
-        npm install --no-cache @salesforce/cli --global
-        echo 'y' | sfdx plugins:install sfdx-git-delta
-        sfdx plugins:install @salesforce/sfdx-scanner
-    - name: Configure delta changes and destructive
-      run: |
-        mkdir changed-sources
-        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
-        echo $(cat changed-sources/package/package.xml) > manifest/package.xml
-        DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]''?'\''/\\')       
-        echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
-    - name: Scan code
-      run: |
-          cd changed-sources
-          sfdx scanner:run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'  
-          cd ..
-    - name: Upload SARIF file
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: changed-sources/apexScanResults.sarif
+      - name: Install SFDX CLI and Scanner
+        run: |
+          npm install sfdx-cli -g
+          sfdx plugins:install @salesforce/sfdx-scanner
+
+      - name: Run Unit Tests
+        run: |
+          npm ci
+          npm run test
+      - name: Configure delta changes and destructive
+        run: |
+          mkdir changed-sources
+          sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
+          echo $(cat changed-sources/package/package.xml) > manifest/package.xml
+          DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]''?'\''/\\')       
+          echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
+      - name: Apex static analysis
+        uses: ./
+        with:
+          pmdconfig: .github/workflows/pmd-ruleset.xml
+          severity-threshold: 4
+          engine: pmd
+          target: './changed-sources/*.cls'
+          eslintconfig: .eslintrc.json
     # tests to run
     - name: 'Selecting Tests to Run from PR Body'
       env:
