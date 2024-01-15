@@ -54,6 +54,10 @@ jobs:
         echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
     - name: Run SFDX Scanner - Report findings as comments
       uses: mitchspano/sfdx-scan-pull-request@v0.1.15
+      with:
+          pmdconfig: masterRuleset.xml
+          severity-threshold: 4
+          strictly-enforced-rules: '[{ "engine": "pmd", "category": "Performance", "rule": "AvoidDebugStatements" }]'
     # tests to run
     - name: 'Selecting Tests to Run from PR Body'
       env:
