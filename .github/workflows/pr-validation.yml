@@ -52,14 +52,12 @@ jobs:
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
         DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]''?'\''/\\')       
         echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
-    - name: Apex static analysis
-      uses: ./
+    - name: Run SFDX Scanner - Report findings as comments
+      uses: mitchspano/sfdx-scan-pull-request@v1
       with:
-        pmdconfig: .github/workflows/pmd-ruleset.xml
+        pmdconfig: masterRuleset.xml
         severity-threshold: 4
-        engine: pmd
-        target: './changed-sources/*.cls'
-        eslintconfig: .eslintrc.json
+        strictly-enforced-rules: '[{ "engine": "pmd", "category": "Performance", "rule": "AvoidDebugStatements" }]'
     # tests to run
     - name: 'Selecting Tests to Run from PR Body'
       env:
