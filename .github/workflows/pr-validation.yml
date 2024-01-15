@@ -11,6 +11,7 @@ name: Validation SFDX Hardis
 jobs:
   check_deployment:
     runs-on: ubuntu-latest
+    permissions: write-all
     name: Simulate Deployment to Major Org
     permissions:
       pull-requests: write
