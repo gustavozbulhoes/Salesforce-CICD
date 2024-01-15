@@ -56,7 +56,7 @@ jobs:
       uses: mitchspano/sfdx-scan-pull-request@v0.1.15
       with:
           severity-threshold: 4
-          strictly-enforced-rules: '[{ "engine": "pmd", "category": "Performance", "rule": "AvoidDebugStatements" }]'
+          strictly-enforced-rules: '[{ "engine": "pmd", "category": "Design,Best Practices,Performance", "rule": "AvoidDebugStatements" }]'
     # tests to run
     - name: 'Selecting Tests to Run from PR Body'
       env:
