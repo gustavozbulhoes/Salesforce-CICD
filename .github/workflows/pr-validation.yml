@@ -11,10 +11,8 @@ name: Validation SFDX Hardis
 jobs:
   check_deployment:
     runs-on: ubuntu-latest
-    permissions: write-all
     name: Simulate Deployment to Major Org
-    permissions:
-      pull-requests: write
+    permissions: write-all
     env:
       SFDX_CLIENT_ID_MAIN: ${{ secrets.SFDX_CLIENT_ID_MAIN}}
       SFDX_CLIENT_KEY_MAIN: ${{ secrets.SFDX_CLIENT_KEY_MAIN}}
