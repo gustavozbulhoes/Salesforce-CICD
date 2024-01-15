@@ -41,9 +41,10 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt install default-jdk
-    - name: Install SFDX CLI and Scanner
+    - name: Install salesforce-cli, sfdx-git-delta and Scanner
       run: |
         npm install --no-cache @salesforce/cli --global
+        echo 'y' | sfdx plugins:install sfdx-git-delta
         sfdx plugins:install @salesforce/sfdx-scanner
     - name: Configure delta changes and destructive
       run: |
