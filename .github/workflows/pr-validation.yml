@@ -34,19 +34,18 @@ jobs:
     - name: Setup Node
       uses: actions/setup-node@v3
       with:
-        node-version: "18" 
-    # SFDX & plugins
-    - name: Install SFDX and plugins
-      run: |
-        npm install --no-cache @salesforce/cli --global
-        echo 'y' | sfdx plugins:install sfdx-git-delta
+        node-version: "18"
+
+    # Calculate Delta and scan apex metadata with SFDX-Scanner (PMD Scan)
     - name: Install java
       run: |
         sudo apt-get update
         sudo apt install default-jdk
-    - name: Install SFDX scanner
-      run: sfdx plugins:install @salesforce/sfdx-scanner
-    # Calculate delta (set package.xml = delta.xml) to deploy only delta changes and set destructive
+    - name: Install salesforce-cli, sfdx-git-delta and sfdx-scanner
+      run: |
+        npm install --no-cache @salesforce/cli --global
+        echo 'y' | sfdx plugins:install sfdx-git-delta
+        sfdx plugins:install @salesforce/sfdx-scanner
     - name: Configure delta changes and destructive
       run: |
         mkdir changed-sources
@@ -54,14 +53,45 @@ jobs:
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
         DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]''?'\''/\\')       
         echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
-    # Scan Code
-    - name: 'Scan code'
+    - name: Scan code
       run: |
           cd changed-sources
           sfdx scanner:run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'  
           cd ..
-          cat changed-sources/apexScanResults.sarif
     - name: Upload SARIF file
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: changed-sources/apexScanResults.sarif
+    # tests to run
+    - name: 'Selecting Tests to Run from PR Body'
+      env:
+        PR_BODY: ${{github.event.pull_request.body}}´
+      run: |
+        echo $PR_BODY > ./pr_body.txt
+        node ./parsePR.js   
+        cat testsToRun.txt           
+        TESTS=$(cat testsToRun.txt)       
+        echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV    
+    # Validation Using SFDX Hardis
+    - name: Install sfdx-hards
+      run: |
+        echo 'y' | sfdx plugins:install sfdx-hardis
+    - name: Salesforce Authentication
+      run:
+        sfdx hardis:auth:login
+    # Check deploy runnning All Tests
+    - name: Simulate delta deployment - All Tests
+      if: ${{env.APEX_TESTS == 'all'}}
+      run:
+        sfdx hardis:project:deploy:sources:dx -c
+    # Check deploy runnning Selected Tests
+    - name: Simulate delta deployment - Selected Tests
+      if: ${{env.APEX_TESTS != 'all'}}
+      run:
+        sfdx hardis:project:deploy:sources:dx -c -l RunSpecifiedTests -r ${{env.APEX_TESTS}}
+    # Separate async destructive    
+    - name: 'Check destructive changes (if any)'
+      if: contains(env.DESTRUCTIVE_PACKAGE, '<types>')
+      run: |
+        cat changed-sources/destructiveChanges/destructiveChanges.xml
+        sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings
