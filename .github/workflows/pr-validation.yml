@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Simulate Deployment to Major Org
     permissions: write-all
+    
     env:
       SFDX_CLIENT_ID_MAIN: ${{ secrets.SFDX_CLIENT_ID_MAIN}}
       SFDX_CLIENT_KEY_MAIN: ${{ secrets.SFDX_CLIENT_KEY_MAIN}}
@@ -22,6 +23,7 @@ jobs:
       ORG_ALIAS: ${{ github.event.pull_request.base.ref }} # Defines the target branch of the PR
       CONFIG_BRANCH: ${{ github.event.pull_request.base.ref }} # Defines the target branch of the PR
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      github-token: ${{ secrets.GITHUB_TOKEN }}
       FORCE_COLOR: "1"
     steps:
     # Checkout repo
@@ -55,7 +57,6 @@ jobs:
     - name: Run SFDX Scanner - Report findings as comments
       uses: mitchspano/sfdx-scan-pull-request@v0.1.15
       with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           target: './**/*.cls'
           severity-threshold: 4
           strictly-enforced-rules: '[{ "engine": "pmd", "category": "Design,Best Practices,Performance", "rule": "AvoidDebugStatements" }]'
