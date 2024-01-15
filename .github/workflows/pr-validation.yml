@@ -58,6 +58,7 @@ jobs:
         pmdconfig: masterRuleset.xml
         severity-threshold: 4
         strictly-enforced-rules: '[{ "engine": "pmd", "category": "Performance", "rule": "AvoidDebugStatements" }]'
+        target: .changed-sources/*
     # tests to run
     - name: 'Selecting Tests to Run from PR Body'
       env:
