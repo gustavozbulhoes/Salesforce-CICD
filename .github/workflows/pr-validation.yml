@@ -41,18 +41,22 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt install default-jdk
-      - name: Install SFDX CLI and Scanner
-        run: |
-          npm install sfdx-cli -g
-          sfdx plugins:install @salesforce/sfdx-scanner
-          
-      - name: Configure delta changes and destructive
-        run: |
-          mkdir changed-sources
-          sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
-          echo $(cat changed-sources/package/package.xml) > manifest/package.xml
-          DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]''?'\''/\\')       
-          echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
+    - name: Install SFDX CLI and Scanner
+      run: |
+        npm install sfdx-cli -g
+        sfdx plugins:install @salesforce/sfdx-scanner
+
+    - name: Run Unit Tests
+      run: |
+        npm ci
+        npm run test
+    - name: Configure delta changes and destructive
+      run: |
+        mkdir changed-sources
+        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
+        echo $(cat changed-sources/package/package.xml) > manifest/package.xml
+        DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]''?'\''/\\')       
+        echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
       - name: Apex static analysis
         uses: ./
         with:
