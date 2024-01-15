@@ -23,7 +23,6 @@ jobs:
       ORG_ALIAS: ${{ github.event.pull_request.base.ref }} # Defines the target branch of the PR
       CONFIG_BRANCH: ${{ github.event.pull_request.base.ref }} # Defines the target branch of the PR
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      github-token: ${{ secrets.GITHUB_TOKEN }}
       FORCE_COLOR: "1"
     steps:
     # Checkout repo
@@ -57,9 +56,11 @@ jobs:
     - name: Run SFDX Scanner - Report findings as comments
       uses: mitchspano/sfdx-scan-pull-request@v0.1.15
       with:
-          target: './**/*.cls'
-          severity-threshold: 4
-          strictly-enforced-rules: '[{ "engine": "pmd", "category": "Design,Best Practices,Performance", "rule": "AvoidDebugStatements" }]'
+        pmdconfig: masterRuleset.xml
+        severity-threshold: 4
+        strictly-enforced-rules: '[{ "engine": "pmd", "category": "Performance", "rule": "AvoidDebugStatements" }]'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     # tests to run
     - name: 'Selecting Tests to Run from PR Body'
       env:
