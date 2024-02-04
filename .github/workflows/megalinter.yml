@@ -5,8 +5,11 @@
     
     on:
       # Trigger mega-linter at every push. Action will also be visible from Pull Requests to master
-      pull_request:
-        branches: [main]
+        pull_request:
+            branches: [ main ]
+            types: [opened, synchronize, reopened]
+            paths:
+              - 'force-app/**'
     
     env: # Comment env block if you do not want to apply fixes
       # Apply linter fixes configuration

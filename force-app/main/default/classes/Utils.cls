@@ -5,8 +5,8 @@ public without sharing class Utils {
     }
 
     //test PMD alert
-    public static integer emptyClass(){
-
+    public void integer emptyClass(){
+        
     }
 
     public static void createRandomContact(){
