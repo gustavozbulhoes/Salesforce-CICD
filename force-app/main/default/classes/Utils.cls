@@ -4,6 +4,11 @@ public without sharing class Utils {
         return a+b;
     }
 
+    //test PMD alert
+    public static integer emptyClass(){
+
+    }
+
     public static void createRandomContact(){
         Contact c = new Contact(lastName = 'test');
         insert c;
