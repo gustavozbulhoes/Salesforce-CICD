@@ -5,7 +5,7 @@ public without sharing class Utils {
     }
 
     //test PMD alert
-    public void integer emptyClass(){
+    public static void emptyMethod(){
         
     }
 
