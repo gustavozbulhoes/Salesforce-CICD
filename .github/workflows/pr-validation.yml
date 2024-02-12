@@ -34,7 +34,7 @@ jobs:
     - name: Setup Node
       uses: actions/setup-node@v3
       with:
-        node-version: "18"
+        node-version: "20"
     # tests to run
     - name: 'Selecting Tests to Run from PR Body'
       env:
