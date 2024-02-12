@@ -1,3 +1,4 @@
+//Tests on PR. This class should be not deployed.
 @isTest
 public class CreatePMDAlertTest {
     @TestSetup
