@@ -8,7 +8,9 @@ public class CreatePMDAlertTest {
     }
 
     @isTest
-    static void pmdAlertTest() {
-        createPMDAlert.pmdAlert();
+    static void createContactForAccount() {
+        createPMDAlert.createContactForAccount();
+        acc = [SELECT Id,(SELECT Id FROM Contacts) FROM Account WHERE Name = 'test'];
+        assert.areEqual(1,acc.Contacts.size(),'Contact was not created as expected');
     }
 }

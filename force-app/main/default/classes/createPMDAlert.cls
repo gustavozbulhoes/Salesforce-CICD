@@ -1,10 +1,12 @@
 public with sharing class createPMDAlert {
     //test PMD alert
-    public static void pmdAlert(){
+    public static void createContactForAccount(){
         List<Account> accs = [SELECT Id FROM Account LIMIT 10];
+        List<Contact> cons = new List<Contact>();
         for(Account acc:accs){
             Contact c = new Contact(lastName = 'test');
-            insert c;
+            cons.add(c);
         }
+        insert cons;
     }
 }
