@@ -4,6 +4,15 @@ public without sharing class Utils {
         return a+b;
     }
 
+    //test PMD alert
+    public static void emptyMethod(){
+        List<Account> accs = [SELECT Id FROM Account LIMIT 10];
+        for(Account acc:accs){
+            Contact c = new Contact(lastName = 'test');
+            insert c;
+        }
+    }
+    
     public static void createRandomContact(){
         Contact c = new Contact(lastName = 'test');
         insert c;
