@@ -1,6 +1,6 @@
 @isTest
-public class createPMDAlertTest {
-    static void createPMDAlertTest() {
+public class CreatePMDAlertTest {
+    static void pmdAlertTest() {
         createPMDAlert.pmdAlert();
     }
 }
