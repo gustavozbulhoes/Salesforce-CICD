@@ -50,6 +50,7 @@ jobs:
       run: |
         npm install --no-cache @salesforce/cli --global
         echo 'y' | sfdx plugins:install sfdx-git-delta
+        echo 'y' | sfdx plugins:install @salesforce/sfdx-scanner
         echo 'y' | sfdx plugins:install sfdx-hardis
     # Calculate delta (set package.xml = delta.xml) to deploy only delta changes and set destructive
     - name: Configure delta changes and destructive
@@ -59,6 +60,16 @@ jobs:
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
         DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]''?'\''/\\')       
         echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
+    # Scanner
+    - name: 'Scan code'
+      run: |
+        cd changed-sources
+        sfdx scanner:run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'  
+        cd ..
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: changed-sources/apexScanResults.sarif
     #login
     - name: Salesforce Authentication
       run:
