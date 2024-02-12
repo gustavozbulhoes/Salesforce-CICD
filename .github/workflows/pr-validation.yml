@@ -63,11 +63,9 @@ jobs:
     # Scanner
     - name: 'Scan code'
       run: |
-        cd changed-sources
         sfdx scanner:run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'  
-        cd ..
     - name: Upload SARIF file
-      uses: github/codeql-action/upload-sarif@v1
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: changed-sources/apexScanResults.sarif
     #login
