@@ -67,7 +67,7 @@ jobs:
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: changed-sources/apexScanResults.sarif
+        sarif_file: apexScanResults.sarif
     #login
     - name: Salesforce Authentication
       run:
