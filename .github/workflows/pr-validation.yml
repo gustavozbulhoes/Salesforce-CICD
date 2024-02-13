@@ -34,7 +34,7 @@ jobs:
     - name: Setup Node
       uses: actions/setup-node@v3
       with:
-        node-version: "18"
+        node-version: "20"
     # tests to run
     - name: 'Selecting Tests to Run from PR Body'
       env:
@@ -63,13 +63,11 @@ jobs:
     # Scanner
     - name: 'Scan code'
       run: |
-        cd changed-sources
         sfdx scanner:run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'  
-        cd ..
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: changed-sources/apexScanResults.sarif
+        sarif_file: apexScanResults.sarif
     #login
     - name: Salesforce Authentication
       run:
