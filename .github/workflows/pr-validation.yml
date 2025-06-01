@@ -32,9 +32,20 @@ jobs:
         fetch-depth: 0 # Faster code checkout fetching only latest commit
     # Setup node
     - name: Setup Node
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: "20"
+        node-version: '>=20.9.0'
+    # Setup python
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '>=3.10'
+    # Setup java
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '>=11'
     # tests to run
     - name: 'Selecting Tests to Run from PR Body'
       env:
@@ -50,7 +61,7 @@ jobs:
       run: |
         npm install --no-cache @salesforce/cli --global
         echo 'y' | sf plugins:install sfdx-git-delta
-        echo 'y' | sf plugins:install @salesforce/sfdx-scanner
+        echo 'y' | sf plugins:install code-analyzer@latest
         echo 'y' | sf plugins:install sfdx-hardis
     # Calculate delta (set package.xml = delta.xml) to deploy only delta changes and set destructive
     - name: Configure delta changes and destructive
@@ -61,13 +72,16 @@ jobs:
         DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]''?'\''/\\')       
         echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
     # Scanner
-    - name: 'Scan code'
-      run: |
-        sf scanner:run --format sarif --target './**/*.cls' --category "Design,Best Practices,Performance" --outfile 'apexScanResults.sarif'  
+    - name: Run Salesforce Code Analyzer
+      id: run-code-analyzer
+      uses: forcedotcom/run-code-analyzer@v2
+      with:
+        run-arguments: --workspace . --view detail --config-file ./code-analyzer.yaml --rule-selector pmd:OpinionatedSalesforce  --rule-selector retire-js:recommended --rule-selector regex:recommended --rule-selector eslint:recommended --rule-selector flow:recommended --rule-selector cpd:recommended --output-file sfca_results.html --output-file sfca_results.json --output-file sfca_results.sarif
+        results-artifact-name: salesforce-code-analyzer-results
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: apexScanResults.sarif
+        sarif_file: sfca_results.sarif
     #login
     - name: Salesforce Authentication
       run:
