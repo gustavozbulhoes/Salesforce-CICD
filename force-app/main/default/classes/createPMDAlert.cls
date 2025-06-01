@@ -1,5 +1,5 @@
 public with sharing class createPMDAlert {
-    //test PMD alert
+    //test PMD alert.
     public static void createContactForAccount(){
         List<Account> accs = [SELECT Id FROM Account LIMIT 10];
         List<Contact> cons = new List<Contact>();
