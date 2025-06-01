@@ -5,7 +5,7 @@ public with sharing class createPMDAlert {
         //List<Contact> cons = new List<Contact>();
         for(Account acc:accs){
             Contact c = new Contact(lastName = 'test',AccountId = acc.Id);
-            insert c
+            insert c;
             //cons.add(c);
         }
         //insert cons;
