@@ -76,7 +76,7 @@ jobs:
       id: run-code-analyzer
       uses: forcedotcom/run-code-analyzer@v2
       with:
-        run-arguments: --workspace . --view detail --config-file ./code-analyzer.yaml --rule-selector pmd:OpinionatedSalesforce  --rule-selector retire-js:recommended --rule-selector regex:recommended --rule-selector eslint:recommended --rule-selector flow:recommended --rule-selector cpd:recommended --output-file sfca_results.html --output-file sfca_results.json --output-file sfca_results.sarif
+        run-arguments: --workspace . --view detail --config-file ./code-analyzer.yaml --target ./force-app --rule-selector pmd:OpinionatedSalesforce  --rule-selector retire-js:recommended --rule-selector regex:recommended --rule-selector eslint:recommended --rule-selector flow:recommended --rule-selector cpd:recommended --output-file sfca_results.html --output-file sfca_results.json --output-file sfca_results.sarif
         results-artifact-name: salesforce-code-analyzer-results
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v3
