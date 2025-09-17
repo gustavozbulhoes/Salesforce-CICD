@@ -4,7 +4,7 @@ This repository contains the source code for a custom Salesforce CI/CD process u
  - [Pablo Gonzales ideias](https://www.pablogonzalez.io/)
  - [sfdx-hardis](https://sfdx-hardis.cloudity.com/)
 
-## How it works:
+## Workflow Overview:
 
 - When a PR is created from a feature branch to the main branch the [pr-validation.yml](https://github.com/gustavozbulhoes/sfdxHardis/blob/main/.github/workflows/pr-validation.yml) workflow runs. It analyzes the feature branch running the [Salesforce Code Analyzer](https://developer.salesforce.com/docs/platform/salesforce-code-analyzer/overview) and simulates the Salesforce deployment (check deploy) running the tests specified in the PR body. The quick deploy Id is saved in the PR Status result comment (see screenshot) and the alerts are available under actions result.
 ![plot](./publicPictures/sfdx-hardis-QuickDeploy.png)
