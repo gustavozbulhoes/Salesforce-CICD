@@ -33,9 +33,9 @@ jobs:
         fetch-depth: 0 # Faster code checkout fetching only latest commit
     # Setup node
     - name: Setup Node
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: "18"
+        node-version: '>=20.9.0'
     # tests to run
     - name: 'Selecting Tests to Run from PR Body'
       env:

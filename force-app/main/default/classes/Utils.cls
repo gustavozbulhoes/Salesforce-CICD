@@ -1,4 +1,4 @@
-//Used only for test deploys.
+//Used only to test deploys
 public without sharing class Utils {
 
     public static void createRandomContact(){
