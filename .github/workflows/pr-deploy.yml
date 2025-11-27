@@ -75,7 +75,7 @@ jobs:
       run:
         sf hardis:project:deploy:smart --testlevel RunSpecifiedTests -r ${{env.APEX_TESTS}}
     # Separate async destructive deploy   
-    - name: 'Deploy destructive changes (if any)'
+    - name: 'Deploy destructive changes async (if any)'
       if: contains(env.DESTRUCTIVE_PACKAGE, '<types>')
       run: |
         cat changed-sources/destructiveChanges/destructiveChanges.xml

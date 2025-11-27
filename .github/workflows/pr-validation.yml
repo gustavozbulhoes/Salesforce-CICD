@@ -1,4 +1,4 @@
-#Based on https://github.com/gustavozbulhoes/Salesforce-CICD
+#Based on https://ci.salto.io/ && https://sfdx-hardis.cloudity.com/
 on:
   pull_request:
     branches: [ main ]
