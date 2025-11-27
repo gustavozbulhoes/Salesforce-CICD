@@ -1,4 +1,4 @@
-#Based on https://ci.salto.io/ && https://sfdx-hardis.cloudity.com/
+#Based on https://github.com/gustavozbulhoes/Salesforce-CICD
 on:
   pull_request:
     branches: [ main ]
@@ -11,7 +11,7 @@ name: Validation SFDX Hardis
 jobs:
   check_deployment:
     runs-on: ubuntu-latest
-    name: Simulate Deployment to Major Org
+    name: Simulate Deployment
     permissions:
       pull-requests: write
     env:
@@ -24,6 +24,9 @@ jobs:
       CONFIG_BRANCH: ${{ github.event.pull_request.base.ref }} # Defines the target branch of the PR
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       FORCE_COLOR: "1"
+    concurrency:
+      group: ${{ github.ref }}-${{ github.workflow }}
+      cancel-in-progress: false
     steps:
     # Checkout repo
     - name: Checkout code
@@ -34,18 +37,7 @@ jobs:
     - name: Setup Node
       uses: actions/setup-node@v4
       with:
-        node-version: '>=20.9.0'
-    # Setup python
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '>=3.10'
-    # Setup java
-    - name: Setup Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'zulu'
-        java-version: '>=11'
+        node-version: 24
     # tests to run
     - name: 'Selecting Tests to Run from PR Body'
       env:
@@ -57,11 +49,10 @@ jobs:
         TESTS=$(cat testsToRun.txt)       
         echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV    
     # SFDX & plugins
-    - name: Install SFDX and plugins
+    - name: Install Salesforce CLI and plugins
       run: |
         npm install --no-cache @salesforce/cli --global
         echo 'y' | sf plugins:install sfdx-git-delta
-        echo 'y' | sf plugins:install code-analyzer@latest
         echo 'y' | sf plugins:install sfdx-hardis
     # Calculate delta (set package.xml = delta.xml) to deploy only delta changes and set destructive
     - name: Configure delta changes and destructive
@@ -71,17 +62,6 @@ jobs:
         echo $(cat changed-sources/package/package.xml) > manifest/package.xml
         DESTRUCTIVE=$(cat changed-sources/destructiveChanges/destructiveChanges.xml | tr -d '[:space:]''?'\''/\\')       
         echo "DESTRUCTIVE_PACKAGE=$DESTRUCTIVE" >> $GITHUB_ENV
-    # Scanner
-    - name: Run Salesforce Code Analyzer
-      id: run-code-analyzer
-      uses: forcedotcom/run-code-analyzer@v2
-      with:
-        run-arguments: --workspace . --view detail --config-file ./code-analyzer.yaml --target ./force-app --rule-selector pmd:OpinionatedSalesforce  --rule-selector retire-js:recommended --rule-selector regex:recommended --rule-selector eslint:recommended --rule-selector flow:recommended --rule-selector cpd:recommended --output-file sfca_results.html --output-file sfca_results.json --output-file sfca_results.sarif
-        results-artifact-name: salesforce-code-analyzer-results
-    - name: Upload SARIF file
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: sfca_results.sarif
     #login
     - name: Salesforce Authentication
       run:
@@ -102,3 +82,50 @@ jobs:
       run: |
         cat changed-sources/destructiveChanges/destructiveChanges.xml
         sf project deploy start --dry-run --async --pre-destructive-changes changed-sources/destructiveChanges/destructiveChanges.xml --manifest changed-sources/destructiveChanges/package.xml --ignore-warnings
+
+  code_analyzer:
+    runs-on: ubuntu-latest
+    name: Code Analyzer
+    permissions:
+      contents: write
+      pull-requests: write
+      security-events: write
+      actions: read
+    # Checkout repo
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    # Setup node
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '>=20.9.0'
+    # Setup python
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '>=3.10'
+    # Setup java
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '>=11'
+    # SFDX & plugins
+    - name: Install Salesforce CLI and Code Analyzer
+      run: |
+        npm install --no-cache @salesforce/cli --global
+        echo 'y' | sf plugins:install code-analyzer@latest
+    # Scanner
+    - name: Run Salesforce Code Analyzer
+      id: run-code-analyzer
+      uses: forcedotcom/run-code-analyzer@v2
+      with:
+        run-arguments: --workspace . --view detail --config-file ./code-analyzer.yaml --target ./force-app --rule-selector pmd:OpinionatedSalesforce  --rule-selector retire-js:recommended --rule-selector regex:recommended --rule-selector eslint:recommended --rule-selector flow:recommended --rule-selector cpd:recommended --output-file sfca_results.html --output-file sfca_results.json --output-file sfca_results.sarif
+        results-artifact-name: salesforce-code-analyzer-results
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: sfca_results.sarif

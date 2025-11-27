@@ -4,7 +4,7 @@ public class UtilsTest {
     @isTest
     public static void createRandomContact(){
         Utils.createRandomContact();
-        List<contact> cs = [SELECT Id FROM Contact LIMIT 1];
+        List<contact> cs = [SELECT Id FROM Contact WHERE lastName = 'test' LIMIT 1];
         assert.areEqual(false,cs.isEmpty(),'contact was not created');
     }
 
