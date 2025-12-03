@@ -1,7 +1,7 @@
 //Used only to test deploys.
 @IsTest
 public class UtilsTest {
-    @IsTest
+    @istest
     public static void createRandomContact(){
         Utils.createRandomContact();
         List<contact> cs = [SELECT Id FROM Contact WHERE lastName = 'test' LIMIT 1];
