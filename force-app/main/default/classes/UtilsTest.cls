@@ -1,4 +1,4 @@
-//Used only to test deploys.
+//Used only to test deploys
 @IsTest
 public class UtilsTest {
     @istest
